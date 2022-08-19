@@ -1,0 +1,4 @@
+[core]
+    remote = local
+['remote "local"']
+    url = /Users/kevinkraus/Documents/GitHub/masterproject_backend/data/dvc_test

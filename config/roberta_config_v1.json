@@ -1,0 +1,19 @@
+{
+  "model": "roberta",
+  "raw_data_path": "data/raw/raw_news_data.csv",
+  "train_data_path": "data/train/train_news.csv.dvc",
+  "valid_data_path": "data/val/valid_news.csv.dvc",
+  "test_data_path": "data/test/test_news.csv.dvc",
+  "colab_base_path": "drive/MyDrive/UHH/masterproject_fakechecker/",
+  "model_output_path": "saved_models/roberta-based",
+  "type": "roberta-base",
+  "train_target": "title",
+  "evaluate": true,
+  "batch_size": 64,
+  "max_seq_length": 64,
+  "learning_rate": 3e-5,
+  "num_epochs": 5,
+  "long_text_summarization": false,
+  "update_data": false,
+  "params": {}
+}

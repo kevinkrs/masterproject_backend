@@ -29,6 +29,7 @@ class LModule(pl.LightningModule):
         )
         self.classifier = RobertaForSequenceClassification(self.config)
 
+
     def forward(self, input_ids, attention_mask, labels):
         output = self.classifier(
             input_ids=input_ids,
@@ -96,7 +97,11 @@ class RobertaModel:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
         if load_from_ckpt:
-            self.model = LModule.load_from_checkpoint(os.path.join(base_dir, config["model_output_path"]))
+            self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
+                                                                   config["model_output_path"],
+                                                                   "epoch=epoch=4-val_loss=val_loss=0.3836.ckpt"),
+                                                      config=config)
+
         else:
             self.model = LModule(config)
             model_output_path = os.path.join(base_dir, config["model_output_path"])
@@ -107,14 +112,15 @@ class RobertaModel:
                             filename="epoch={epoch}-val_loss={val_loss:.4f}",
                             save_weights_only=True,
                         )
-
             self.trainer = Trainer(
-                    max_epochs=config["num_epochs"],
-                    logger=False,
-                    accelerator=config["accelerator"],
-                    devices=1,
-                    callbacks=[checkpoint_callback],
-                )
+                max_epochs=config["num_epochs"],
+                logger=False,
+                accelerator=config["accelerator"],
+                devices=1,
+                callbacks=[checkpoint_callback],
+            )
+
+
 
     def train(self, train_data, val_data):
         train_dataloader = DataLoader(
@@ -174,5 +180,6 @@ class RobertaModel:
 
         return logits
 
+    # Only required for mlflow to work
     def get_params(self) -> Dict:
         return {}

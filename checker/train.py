@@ -36,6 +36,9 @@ if __name__ == "__main__":
     # args = read_args()
     # with open(args.config_file) as f:
     #     config = json.load(f)
+    # set some environment variables
+    os.environ["TOKENIZER_PARALLELISM"] = "false"
+    os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:
@@ -76,13 +79,17 @@ if __name__ == "__main__":
         test_datapoints = tokenizer_base(test_raw)
 
         if config["model"] == "roberta":
-            model = RobertaModel(config)
+            if config["from_ckp"]:
+                model = RobertaModel(config, load_from_ckpt=True)
+            else:
+                model = RobertaModel(config)
         else:
             raise ValueError(f"Invalid model type {config['model']} provided")
 
-        if not config["evaluate"]:
+        if config["train"]:
             LOGGER.info("Training model...")
             model.train(train_datapoints, val_datapoints)
+
 
         mlflow.log_params(model.get_params())
         LOGGER.info("Evaluating model...")
@@ -101,3 +108,5 @@ if __name__ == "__main__":
                     f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
             ) as i:
                 json.dump([str(x) for x in metric_objects], i)
+
+        mlflow.end_run()

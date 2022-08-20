@@ -11,7 +11,6 @@ Project structure oriented by the project of mihail911. Thank you for such a bea
 Currently, the support of torch on M1 Metall is a nightly build. Not all features are available.
 Following settings are required
 - Set _accelerator_ to ``mps`` in the config file
-- Run ``export PYTORCH_ENABLE_MPS_FALLBACK=1`` as bash command
 
 
 # Usefull sources

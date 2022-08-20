@@ -5,3 +5,8 @@
 ## Docker
 
 ## Frontend deployment
+
+
+# Model 
+## TODO:
+- Parametrise checkpoint name from checkpoint folder

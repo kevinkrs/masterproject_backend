@@ -13,7 +13,7 @@ def tokenizer_base(data):
 
     for idx, statement in data.iterrows():
         tokenized = tokenizer(
-            statement[2],
+            statement.text,
             return_tensors="pt",
             # this one is optional. If nothing set, a python list of integers will be returned
             padding="max_length",

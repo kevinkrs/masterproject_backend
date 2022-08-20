@@ -5,7 +5,7 @@ import pandas as pd
 import json
 import os
 import nltk
-import secrets
+import keys
 
 nltk.download("stopwords")
 from nltk.corpus import stopwords
@@ -20,12 +20,12 @@ logger = logging.getLogger()
 
 
 def load_data_from_db(path: str):
-    username = secrets.USERNAME
-    passwort = secrets.PASSWORD
-    host = secrets.HOST
-    host2 = secrets.HOST2
-    ssh_username = secrets.SSH_USERNAME
-    ssh_password = secrets.SSH_PASSWORD
+    username = keys.USERNAME
+    passwort = keys.PASSWORD
+    host = keys.HOST
+    host2 = keys.HOST2
+    ssh_username = keys.SSH_USERNAME
+    ssh_password = keys.SSH_PASSWORD
 
     tunnel_info = [
         {

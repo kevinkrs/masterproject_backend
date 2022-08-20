@@ -1,9 +1,9 @@
 {
   "model": "roberta",
   "raw_data_path": "data/raw/raw_news_data.csv",
-  "train_data_path": "data/train/train_news.csv.dvc",
-  "val_data_path": "data/val/valid_news.csv.dvc",
-  "test_data_path": "data/test/test_news.csv.dvc",
+  "train_data_path": "data/train/train_news.csv",
+  "val_data_path": "data/val/valid_news.csv",
+  "test_data_path": "data/test/test_news.csv",
   "colab_base_path": "drive/MyDrive/UHH/masterproject_fakechecker/",
   "model_output_path": "saved_models/roberta-based",
   "type": "roberta-base",

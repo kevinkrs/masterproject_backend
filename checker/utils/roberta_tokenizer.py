@@ -2,20 +2,18 @@ import json
 import os
 from transformers import RobertaTokenizerFast
 
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+with open(os.path.join(base_dir, "../config/roberta_v1.json")) as f:
+    config = json.load(f)
 
 
 def tokenizer_base(data):
-
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(base_dir, "../config/roberta_v1.json")) as f:
-        config = json.load(f)
-
     tokenizer = RobertaTokenizerFast.from_pretrained(config["type"], padding_side="right")
     tokenized_data = []
 
     for idx, statement in data.iterrows():
         tokenized = tokenizer(
-            statement.text,
+            statement[2],
             return_tensors="pt",
             # this one is optional. If nothing set, a python list of integers will be returned
             padding="max_length",

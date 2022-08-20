@@ -61,7 +61,6 @@ if __name__ == "__main__":
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
         if config["update_data"]:
-            ## Main
             load_data_from_db(RAW_PATH)
             create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH, config)
 

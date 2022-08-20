@@ -2,6 +2,7 @@ import pytorch_lightning as pl
 import torch
 import numpy as np
 import mlflow
+import os
 
 from torch.utils.data import DataLoader
 from pytorch_lightning import Trainer
@@ -92,26 +93,28 @@ class LModule(pl.LightningModule):
 class RobertaModel:
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
         if load_from_ckpt:
-            self.model = LModule.load_from_checkpoint("saved_models/roberta-base")
+            self.model = LModule.load_from_checkpoint(os.path.join(base_dir, config["model_output_path"]))
         else:
             self.model = LModule(config)
+            model_output_path = os.path.join(base_dir, config["model_output_path"])
             checkpoint_callback = ModelCheckpoint(
-                monitor="avg_val_loss",
-                mode="min",
-                dirpath=config["model_output_path"],
-                filename="epoch={epoch}-val_loss={val_loss:.4f}",
-                save_weights_only=True,
-            )
+                            monitor="val_loss",
+                            mode="min",
+                            dirpath=model_output_path,
+                            filename="epoch={epoch}-val_loss={val_loss:.4f}",
+                            save_weights_only=True,
+                        )
 
             self.trainer = Trainer(
-                max_epochs=config["num_epochs"],
-                logger=False,
-                accelerator=config["accelerator"],
-                devices=1,
-                callbacks=[checkpoint_callback],
-            )
+                    max_epochs=config["num_epochs"],
+                    logger=False,
+                    accelerator=config["accelerator"],
+                    devices=1,
+                    callbacks=[checkpoint_callback],
+                )
 
     def train(self, train_data, val_data):
         train_dataloader = DataLoader(
@@ -119,11 +122,11 @@ class RobertaModel:
             batch_size=self.config["batch_size"],
             shuffle=True,
             pin_memory=True,
-            num_workers=2,
+            num_workers=6,
         )
 
         val_dataloader = DataLoader(
-            val_data, batch_size=16, shuffle=False, pin_memory=True, num_workers=2
+            val_data, batch_size=16, shuffle=False, pin_memory=True, num_workers=6
         )
 
         self.trainer.fit(self.model, train_dataloader, val_dataloader)

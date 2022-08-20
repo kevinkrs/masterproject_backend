@@ -1,31 +1,31 @@
 import logging
 import pymongo
-from pytunneling import TunnelNetwork
-import pandas as pd
 import json
 import os
 import nltk
-import keys
+import pandas as pd
+import SECRETS
 
-nltk.download("stopwords")
+from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re
 
+nltk.download("stopwords")
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-with open(os.path.join(base_dir, "../config/roberta_v1.json")) as f:
+with open(os.path.join(base_dir, "config/roberta_v1.json")) as f:
     config = json.load(f)
 logger = logging.getLogger()
 
 
 def load_data_from_db(path: str):
-    username = keys.USERNAME
-    passwort = keys.PASSWORD
-    host = keys.HOST
-    host2 = keys.HOST2
-    ssh_username = keys.SSH_USERNAME
-    ssh_password = keys.SSH_PASSWORD
+    username = SECRETS.USERNAME
+    passwort = SECRETS.PASSWORD
+    host = SECRETS.HOST
+    host2 = SECRETS.HOST2
+    ssh_username = SECRETS.SSH_USERNAME
+    ssh_password = SECRETS.SSH_PASSWORD
 
     tunnel_info = [
         {

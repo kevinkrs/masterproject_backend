@@ -4,9 +4,10 @@ import os
 import mlflow
 import pandas as pd
 
-from utils.dataloader import load_data_from_db, create_model_data
-from model.roberta_based import RobertaModel
+
 from datetime import datetime
+from model.roberta_based import RobertaModel
+# from utils.dataloader import load_data_from_db, create_model_data TODO: Can't fix module not found error...
 from utils.roberta_tokenizer import tokenizer_base
 
 logging.basicConfig(
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     #     config = json.load(f)
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "config/roberta_v1.json")) as f:
+    with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:
         config = json.load(f)
 
     # set_random_seed(42)
@@ -81,7 +82,7 @@ if __name__ == "__main__":
 
         if not config["evaluate"]:
             LOGGER.info("Training model...")
-            model.train(train_datapoints, val_datapoints, cache_featurizer=True)
+            model.train(train_datapoints, val_datapoints)
 
         mlflow.log_params(model.get_params())
         LOGGER.info("Evaluating model...")
@@ -97,6 +98,6 @@ if __name__ == "__main__":
 
         for metric in metrics:
             with open(
-                    f"logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
+                    f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
             ) as i:
                 json.dump([str(x) for x in metric_objects], i)

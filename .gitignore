@@ -1,2 +1,2 @@
 .DS_Store
-keys.py
+checker/utils/SECRETS.py

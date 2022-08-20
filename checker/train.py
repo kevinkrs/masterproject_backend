@@ -1,25 +1,19 @@
-import argparse
 import json
 import logging
 import os
-import random
-from shutil import copy
-from datetime import datetime
-
 import mlflow
-import numpy as np
-import torch
+import pandas as pd
 
 from utils.dataloader import load_data_from_db, create_model_data
-from checker.model.roberta_based import RobertaModel
-from checker.utils.reader import read_csv_data
+from model.roberta_based import RobertaModel
+from datetime import datetime
+from utils.roberta_tokenizer import tokenizer_base
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
     level=logging.DEBUG,
 )
 LOGGER = logging.getLogger(__name__)
-
 
 # def read_args() -> argparse.Namespace:
 #     parser = argparse.ArgumentParser()
@@ -28,12 +22,12 @@ LOGGER = logging.getLogger(__name__)
 #     return parser.parse_args()
 
 
-def set_random_seed(val: int = 1) -> None:
-    random.seed(val)
-    np.random.seed(val)
-    # Torch-specific random-seeds
-    torch.manual_seed(val)
-    torch.cuda.manual_seed_all(val)
+# def set_random_seed(val: int = 1) -> None:
+#     random.seed(val)
+#     np.random.seed(val)
+#     # Torch-specific random-seeds
+#     torch.manual_seed(val)
+#     torch.cuda.manual_seed_all(val)
 
 
 if __name__ == "__main__":
@@ -41,14 +35,14 @@ if __name__ == "__main__":
     # args = read_args()
     # with open(args.config_file) as f:
     #     config = json.load(f)
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open("config/roberta_config_v1.json") as f:
+    with open(os.path.join(base_dir, "config/roberta_v1.json")) as f:
         config = json.load(f)
 
-    set_random_seed(42)
+    # set_random_seed(42)
     mlflow.set_experiment(config["model"])
 
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     model_output_path = os.path.join(base_dir, config["model_output_path"])
     # Update full model output path
     config["model_output_path"] = model_output_path
@@ -72,9 +66,14 @@ if __name__ == "__main__":
             create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH, config)
 
         # Read data
-        train_datapoints = read_csv_data(TRAIN_PATH)
-        val_datapoints = read_csv_data(VAL_PATH)
-        test_datapoints = read_csv_data(TEST_PATH)
+        train_raw = pd.read_csv(TRAIN_PATH)
+        val_raw = pd.read_csv(VAL_PATH)
+        test_raw = pd.read_csv(TEST_PATH)
+
+        # Tokenize data
+        train_datapoints = tokenizer_base(train_raw)
+        val_datapoints = tokenizer_base(val_raw)
+        test_datapoints = tokenizer_base(test_raw)
 
         if config["model"] == "roberta":
             model = RobertaModel(config)
@@ -99,6 +98,6 @@ if __name__ == "__main__":
 
         for metric in metrics:
             with open(
-                f"logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
+                    f"logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
             ) as i:
                 json.dump([str(x) for x in metric_objects], i)

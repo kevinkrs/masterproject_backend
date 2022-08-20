@@ -11,10 +11,12 @@ nltk.download("stopwords")
 from nltk.corpus import stopwords
 import re
 
-with open("config/roberta.json") as f:
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+with open(os.path.join(base_dir, "../config/roberta_v1.json")) as f:
     config = json.load(f)
 logger = logging.getLogger()
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def load_data_from_db(path: str):

@@ -24,7 +24,7 @@ from sklearn.metrics import roc_auc_score
 ## Tokenizer function
 
 
-# with open("config/roberta_config_v1.json") as f:
+# with open("config/roberta_v1.json") as f:
 #     config = json.load(f)
 #
 # train_raw = pd.read_csv('data/preprocessed/train_news.csv')
@@ -34,7 +34,7 @@ from sklearn.metrics import roc_auc_score
 
 # Module Definition
 
-with open("config/roberta_config_v1.json") as f:
+with open("config/roberta_v1.json") as f:
     config = json.load(f)
 
 

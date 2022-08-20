@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-from checker.utils.features import Datapoint
+from checker import Datapoint
 
 
 def read_csv_data(datapath: str) -> List[Datapoint]:

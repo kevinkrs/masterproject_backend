@@ -1,4 +1,3 @@
-import json
 import pytorch_lightning as pl
 import torch
 import numpy as np
@@ -8,13 +7,14 @@ from torch.utils.data import DataLoader
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import RobertaConfig, RobertaForSequenceClassification
-from base import BaseModel
 from typing import Optional, Dict
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
+
+#from checker.model.base import BaseModel
 
 
 class LModule(pl.LightningModule):
@@ -89,7 +89,7 @@ class LModule(pl.LightningModule):
 
 
 # Model Definition
-class RobertaModel(BaseModel):
+class RobertaModel:
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
 
@@ -108,8 +108,8 @@ class RobertaModel(BaseModel):
             self.trainer = Trainer(
                 max_epochs=config["num_epochs"],
                 logger=False,
-                # accelerator='gpu',
-                # devices=1,
+                accelerator=config["accelerator"],
+                devices=1,
                 callbacks=[checkpoint_callback],
             )
 
@@ -170,3 +170,6 @@ class RobertaModel(BaseModel):
                 logits.append(output[1])  # we only return the logits tensor
 
         return logits
+
+    def get_params(self) -> Dict:
+        return {}

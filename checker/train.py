@@ -15,6 +15,8 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 LOGGER = logging.getLogger(__name__)
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
+os.environ["TOKENIZER_PARALLELISM"] = "true"
 
 # def read_args() -> argparse.Namespace:
 #     parser = argparse.ArgumentParser()
@@ -37,8 +39,6 @@ if __name__ == "__main__":
     # with open(args.config_file) as f:
     #     config = json.load(f)
     # set some environment variables
-    os.environ["TOKENIZER_PARALLELISM"] = "false"
-    os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:

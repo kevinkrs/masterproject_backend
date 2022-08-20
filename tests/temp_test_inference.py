@@ -7,7 +7,7 @@ from checker.model.roberta_based import RobertaModel
 from checker.utils.roberta_tokenizer import tokenizer_base
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "0"
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:
     config = json.load(f)
 

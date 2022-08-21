@@ -5,7 +5,10 @@ name: Python application
 
 on:
   push:
-    branches: [ "master", "staging" "roberta-base-v1.0.0" ]
+    branches:
+      - master
+      - staging
+      - roberta-base-v1.0.0
   pull_request:
     branches: [ "master" ]
 

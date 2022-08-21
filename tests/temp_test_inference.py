@@ -27,9 +27,6 @@ df = pd.DataFrame(data, columns=['text', 'label'])
 
 inputs = tokenizer_base(df)
 
-outputs = model.predict(inputs)
-
-
 # 1. Get prediction as list
 logits = model.predict(inputs)
 # 2. Transform list to torch tensor

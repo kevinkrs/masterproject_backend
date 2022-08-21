@@ -165,6 +165,7 @@ class RobertaModel:
         )
         self.model.eval()
         logits = []
+        self.model.cuda()
         # detaching of tensors from current computantional graph
         with torch.no_grad():
             for idx, batch in enumerate(dataloader):

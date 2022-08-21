@@ -4,8 +4,7 @@ import json
 import os
 import nltk
 import pandas as pd
-import SECRETS
-
+import config_secrets # TODO: Cannot resolve module not foun error
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re
@@ -20,12 +19,12 @@ logger = logging.getLogger()
 
 
 def load_data_from_db(path: str):
-    username = SECRETS.USERNAME
-    passwort = SECRETS.PASSWORD
-    host = SECRETS.HOST
-    host2 = SECRETS.HOST2
-    ssh_username = SECRETS.SSH_USERNAME
-    ssh_password = SECRETS.SSH_PASSWORD
+    username = config_secrets.USERNAME
+    passwort = config_secrets.PASSWORD
+    host = config_secrets.HOST
+    host2 = config_secrets.HOST2
+    ssh_username = config_secrets.SSH_USERNAME
+    ssh_password = config_secrets.SSH_PASSWORD
 
     tunnel_info = [
         {
@@ -172,15 +171,15 @@ def preprocess_cleaning(raw_path, config):
 
 
 def create_model_data(raw_path, train_path, valid_path, test_path, config):
-    df = preprocess_cleaning(raw_path, config)
+        df = preprocess_cleaning(raw_path, config)
 
-    train_valid = df.sample(frac=0.9, random_state=12)
-    train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
-    valid = train_valid.drop(train.index)  # 10%
-    test = df.drop(train_valid.index)  # 10%
+        train_valid = df.sample(frac=0.9, random_state=12)
+        train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
+        valid = train_valid.drop(train.index)  # 10%
+        test = df.drop(train_valid.index)  # 10%
 
-    train.to_csv(train_path)
-    valid.to_csv(valid_path)
-    test.to_csv(test_path)
+        train.to_csv(train_path)
+        valid.to_csv(valid_path)
+        test.to_csv(test_path)
 
-    logger.info("Successfully created test, valid and train dataset")
+        logger.info("Successfully created test, valid and train dataset")

@@ -7,7 +7,7 @@ import pandas as pd
 
 from datetime import datetime
 from model.roberta_based import RobertaModel
-# from utils.dataloader import load_data_from_db, create_model_data TODO: Can't fix module not found error...
+from utils.dataloader import load_data_from_db, create_model_data
 from utils.roberta_tokenizer import tokenizer_base
 
 logging.basicConfig(

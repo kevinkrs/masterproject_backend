@@ -1,5 +1,5 @@
 .DS_Store
 .idea
-checker/utils/SECRETS.py
+checker/utils/config_secrets.py
 saved_models
 mlruns

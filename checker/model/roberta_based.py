@@ -29,6 +29,7 @@ class LModule(pl.LightningModule):
         )
         self.classifier = RobertaForSequenceClassification(self.config)
 
+
     def forward(self, input_ids, attention_mask, labels):
         output = self.classifier(
             input_ids=input_ids,
@@ -96,7 +97,11 @@ class RobertaModel:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
         if load_from_ckpt:
-            self.model = LModule.load_from_checkpoint(os.path.join(base_dir, config["model_output_path"]))
+            self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
+                                                                   config["model_output_path"],
+                                                                   "epoch=epoch=4-val_loss=val_loss=0.3300.ckpt"),
+                                                      config=config)
+
         else:
             self.model = LModule(config)
             model_output_path = os.path.join(base_dir, config["model_output_path"])
@@ -107,14 +112,15 @@ class RobertaModel:
                             filename="epoch={epoch}-val_loss={val_loss:.4f}",
                             save_weights_only=True,
                         )
-
             self.trainer = Trainer(
-                    max_epochs=config["num_epochs"],
-                    logger=False,
-                    accelerator=config["accelerator"],
-                    devices=1,
-                    callbacks=[checkpoint_callback],
-                )
+                max_epochs=5,
+                logger=False,
+                accelerator='gpu',
+                devices=2,
+                callbacks=[checkpoint_callback],
+            )
+
+
 
     def train(self, train_data, val_data):
         train_dataloader = DataLoader(
@@ -122,11 +128,11 @@ class RobertaModel:
             batch_size=self.config["batch_size"],
             shuffle=True,
             pin_memory=True,
-            num_workers=6,
+            num_workers=4,
         )
 
         val_dataloader = DataLoader(
-            val_data, batch_size=16, shuffle=False, pin_memory=True, num_workers=6
+            val_data, batch_size=16, shuffle=False, pin_memory=True, num_workers=4
         )
 
         self.trainer.fit(self.model, train_dataloader, val_dataloader)
@@ -159,20 +165,19 @@ class RobertaModel:
         )
         self.model.eval()
         logits = []
-        device = torch.device("mps")
-        self.model.to(device)
         # detaching of tensors from current computantional graph
         with torch.no_grad():
             for idx, batch in enumerate(dataloader):
                 output = self.model(
-                    input_ids=batch["input_ids"].to(device),
-                    attention_mask=batch["attention_mask"].to(device),
-                    # token_type_ids=batch['token_type_ids'].to(device),
-                    labels=batch["label"].to(device),
+                    input_ids=batch["input_ids"].cuda(),
+                    attention_mask=batch["attention_mask"].cuda(),
+                    # token_type_ids=batch['token_type_ids'].cuda(),
+                    labels=batch["label"].cuda(),
                 )
                 logits.append(output[1])  # we only return the logits tensor
 
         return logits
 
+    # Only required for mlflow to work
     def get_params(self) -> Dict:
         return {}

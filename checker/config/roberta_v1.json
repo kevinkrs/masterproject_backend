@@ -8,6 +8,8 @@
   "model_output_path": "saved_models/roberta-based",
   "type": "roberta-base",
   "train_target": "title",
+  "train": true,
+  "from_ckp": false,
   "evaluate": false,
   "batch_size": 64,
   "max_seq_length": 64,
@@ -16,5 +18,9 @@
   "long_text_summarization": false,
   "update_data": false,
   "accelerator": "mps",
-  "params": {}
+  "params": {},
+  "env": {
+    "TOKENIZERS_PARALLELISM": "true",
+    "PYTORCH_ENABLE_MPS_FALLBACK": "1"
+  }
 }

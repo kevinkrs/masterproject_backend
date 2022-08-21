@@ -1,2 +1,5 @@
 .DS_Store
-checker/utils/SECRETS.py
+.idea
+checker/utils/config_secrets.py
+saved_models
+mlruns

@@ -3,3 +3,4 @@
 checker/utils/SECRETS.py
 saved_models
 mlruns
+__pycache__

@@ -2,13 +2,12 @@ import json
 import logging
 import os
 import mlflow
-import pandas as pd
-
+from datasets import load_dataset
 
 from datetime import datetime
-from model.roberta_based import RobertaModel
-from utils.dataloader import load_data_from_db, create_model_data
-from utils.roberta_tokenizer import tokenizer_base
+from model.transformer import TransformerModel
+#from utils.dataloader import load_data_from_db, create_model_data
+from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -41,7 +40,7 @@ if __name__ == "__main__":
     # set some environment variables
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:
+    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
 
     # set_random_seed(42)
@@ -69,22 +68,23 @@ if __name__ == "__main__":
             create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH, config)
 
         # Read data
-        train_raw = pd.read_csv(TRAIN_PATH)
-        val_raw = pd.read_csv(VAL_PATH)
-        test_raw = pd.read_csv(TEST_PATH)
+        data_train = {"train": TRAIN_PATH}
+        data_val = {"val": VAL_PATH}
+        data_test = {"test": TEST_PATH}
+        # Read data
+        train_raw = load_dataset("csv", data_files=data_train)
+        val_raw = load_dataset("csv", data_files=data_val)
+        test_raw = load_dataset("csv", data_files=data_test)
 
-        # Tokenize data
-        train_datapoints = tokenizer_base(train_raw)
-        val_datapoints = tokenizer_base(val_raw)
-        test_datapoints = tokenizer_base(test_raw)
+        train_datapoints = train_raw.map(tokenizer_base, batched=True)
+        val_datapoints = val_raw.map(tokenizer_base, batched=True)
+        test_datapoints = test_raw.map(tokenizer_base, batched=True)
 
-        if config["model"] == "roberta":
-            if config["from_ckp"]:
-                model = RobertaModel(config, load_from_ckpt=True)
-            else:
-                model = RobertaModel(config)
+
+        if config["from_ckp"]:
+            model = TransformerModel(config, load_from_ckpt=True)
         else:
-            raise ValueError(f"Invalid model type {config['model']} provided")
+            model = TransformerModel(config)
 
         if config["train"]:
             LOGGER.info("Training model...")

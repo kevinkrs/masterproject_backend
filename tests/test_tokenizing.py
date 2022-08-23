@@ -1,4 +1,4 @@
-from checker.utils.roberta_tokenizer import tokenizer_base
+from checker.utils.transformer_tokenizer import tokenizer_base
 import os
 import pandas as pd
 import json
@@ -7,7 +7,7 @@ import json
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def test_tokenizer():
-    with open(os.path.join(base_dir, "config/roberta_v1.json")) as f:
+    with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
     RAW_PATH = os.path.join(base_dir, config["raw_data_path"])

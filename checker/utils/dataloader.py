@@ -13,7 +13,7 @@ nltk.download("stopwords")
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-with open(os.path.join(base_dir, "config/roberta_v1.json")) as f:
+with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 logger = logging.getLogger()
 

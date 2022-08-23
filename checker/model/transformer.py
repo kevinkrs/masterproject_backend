@@ -7,7 +7,7 @@ import os
 from torch.utils.data import DataLoader
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from transformers import RobertaConfig, RobertaForSequenceClassification
+from transformers import AutoConfig, AutoModelForSequenceClassification
 from typing import Optional, Dict
 
 from sklearn.metrics import accuracy_score
@@ -19,52 +19,33 @@ from sklearn.metrics import roc_auc_score
 
 
 class LModule(pl.LightningModule):
-    def __init__(self, config):
+    def __init__(self, model_name_or_path: str):
         super().__init__()
-        self.config = RobertaConfig.from_pretrained(
-            config["type"],
+        self.config = AutoConfig.from_pretrained(
+            model_name_or_path,
             num_labels=2,
             output_attentions=False,
             output_hidden_states=False,
         )
-        self.classifier = RobertaForSequenceClassification(self.config)
+        self.classifier = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, config=self.config)
 
 
-    def forward(self, input_ids, attention_mask, labels):
-        output = self.classifier(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            # token_type_ids=token_type_ids,
-            # special_tokens_mask=special_tokens_mask,
-            labels=labels,
-        )
-
-        return output
+    def forward(self, **inputs):
+        outputs = self.classifier(**inputs)
+        return outputs
 
     def training_step(self, batch, batch_idx):
-        output = self(
-            input_ids=batch["input_ids"],
-            attention_mask=batch["attention_mask"],
-            # token_type_ids=batch['token_type_ids'],
-            # special_tokens_mask=batch['special_tokens_mask'],
-            labels=batch["label"],
-        )
+        outputs = self(**batch)
 
-        self.log("train_loss", output[0])
-        # output includes: loss[0], logits[1], hidden states[2] and attentions [3]
-        return output[0]
+        self.log("train_loss", outputs[0])
+        # outputs includes: loss[0], logits[1], hidden states[2] and attentions [3]
+        return outputs[0]
 
     def validation_step(self, batch, batch_idx):
-        output = self(
-            input_ids=batch["input_ids"],
-            attention_mask=batch["attention_mask"],
-            # token_type_ids=batch['token_type_ids'],
-            # special_tokens_mask=batch['special_tokens_mask'],
-            labels=batch["label"],
-        )
+        outputs = self(**batch)
 
-        self.log("val_loss", output[0])
-        return output[0]
+        self.log("val_loss", outputs[0])
+        return outputs[0]
 
     def validation_epoch_end(self, outputs) -> None:
         avg_val_loss = float(sum(outputs) / len(outputs))
@@ -73,16 +54,10 @@ class LModule(pl.LightningModule):
         print(f"Avg val loss: {avg_val_loss}")
 
     def test_step(self, batch, batch_idx):
-        output = self(
-            input_ids=batch["input_ids"],
-            attention_mask=batch["attention_mask"],
-            # token_type_ids=batch['token_type_ids'],
-            # special_tokens_mask=batch['special_tokens_mask'],
-            labels=batch["label"],
-        )
+        outputs = self(**batch)
 
-        self.log("test_loss", output[0])
-        return output[0]
+        self.log("test_loss", outputs[0])
+        return outputs[0]
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=3e-5)
@@ -91,7 +66,7 @@ class LModule(pl.LightningModule):
 
 
 # Model Definition
-class RobertaModel:
+class TransformerModel:
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -100,10 +75,10 @@ class RobertaModel:
             self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
                                                                    config["model_output_path"],
                                                                    "epoch=epoch=4-val_loss=val_loss=0.3300.ckpt"),
-                                                      config=config)
+                                                      )
 
         else:
-            self.model = LModule(config)
+            self.model = LModule(config["type"])
             model_output_path = os.path.join(base_dir, config["model_output_path"])
             checkpoint_callback = ModelCheckpoint(
                             monitor="val_loss",
@@ -115,24 +90,22 @@ class RobertaModel:
             self.trainer = Trainer(
                 max_epochs=config["num_epochs"],
                 logger=False,
-                accelerator=config["accelerator"],
+                accelerator="auto",
                 devices=1,
                 callbacks=[checkpoint_callback],
             )
 
 
 
-    def train(self, train_data, val_data):
+    def train(self, dataset):
         train_dataloader = DataLoader(
-            train_data,
+            dataset["train"],
             batch_size=self.config["batch_size"],
             shuffle=True,
-            pin_memory=True,
-            num_workers=6,
         )
 
         val_dataloader = DataLoader(
-            val_data, batch_size=16, shuffle=False, pin_memory=True, num_workers=6
+            dataset["val"], batch_size=16, shuffle=False,
         )
 
         self.trainer.fit(self.model, train_dataloader, val_dataloader)

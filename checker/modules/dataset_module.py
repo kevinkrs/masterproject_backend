@@ -3,6 +3,7 @@ import json
 import os
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
+from datasets import load_dataset
 
 class TransformerDataModule(pl.LightningDataModule):
 
@@ -16,16 +17,26 @@ class TransformerDataModule(pl.LightningDataModule):
         "labels",
     ]
 
+
     def __init__(self, model_name_or_path: str):
         super().__init__()
+
+
+
+        # Read data
         self.model_name_or_path = model_name_or_path
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         with open(os.path.join(base_dir, "checker/config/config.json")) as f:
             self.config = json.load(f)
         self.tokenizer = AutoTokenizer.from_pretrained(self.config["type"], padding_side="right")
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        TRAIN_PATH = os.path.join(base_dir, self.config["train_data_path"])
+        VAL_PATH = os.path.join(base_dir, self.config["val_data_path"])
+        TEST_PATH = os.path.join(base_dir, self.config["test_data_path"])
+        self.data_paths = {"train": TRAIN_PATH, "val": VAL_PATH, "test": TEST_PATH}
 
-    def setup(self, dataset, stage: str):
-        self.dataset = dataset
+    def setup(self, stage: str):
+        self.dataset = load_dataset("csv", data_files=self.data_paths)
         for split in self.dataset.keys():
             self.dataset[split] = self.dataset[split].map(
                 self.tokenizer_base,

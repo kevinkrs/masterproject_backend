@@ -28,7 +28,7 @@ class LModule(pl.LightningModule):
             output_hidden_states=False,
         )
         self.classifier = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, config=self.config)
-
+        self.save_hyperparameters()
 
     def forward(self, **inputs):
         outputs = self.classifier(**inputs)
@@ -43,9 +43,16 @@ class LModule(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         outputs = self(**batch)
+        val_loss, logits = outputs[:2]
+        if self.hparams.num_labels > 1:
+            preds = torch.argmax(logits, axis=1)
+        elif self.hparams.num_labels == 1:
+            preds = logits.squeeze()
 
-        self.log("val_loss", outputs[0])
-        return outputs[0]
+        labels = batch["labels"]
+
+        self.log("val_loss", val_loss)
+        return {"loss": val_loss, "preds": preds, "labels": labels}
 
     def validation_epoch_end(self, outputs) -> None:
         avg_val_loss = float(sum(outputs) / len(outputs))
@@ -129,7 +136,7 @@ class TransformerModel:
         self.model.to(device)
         # detaching of tensors from current computantional graph
         with torch.no_grad():
-            for idx, batch in enumerate(dataloader):
+            for idx, batch in enumerate(datamodule):
                 output = self.model(
                     input_ids=batch["input_ids"].to(device),
                     attention_mask=batch["attention_mask"].to(device),

@@ -25,20 +25,9 @@ with open(os.path.join(base_dir, "checker/config/config.json")) as f:
 
 model_output_path = os.path.join(base_dir, config["model_output_path"])
 # Update full model output path
-config["model_output_path"] = model_output_path
-os.makedirs(model_output_path, exist_ok=True)
 
-TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
-VAL_PATH = os.path.join(base_dir, config["val_data_path"])
-TEST_PATH = os.path.join(base_dir, config["test_data_path"])
-
-data = {"train": TRAIN_PATH, "val": VAL_PATH, "test": TEST_PATH}
-# Read data
-data_raw = load_dataset("csv", data_files=data)
-
-
-dataloader = TransformerDataModule(config["type"])
-dataloader.setup(data_raw, "fit")
+datamodule = TransformerDataModule(config["type"])
+datamodule.setup("fit")
 #next(iter(dataloader.train_dataloader()))
 
 if config["from_ckp"]:
@@ -47,4 +36,4 @@ else:
     model = TransformerModel(config)
 
 
-model.train(dataloader)
+model.train(datamodule)

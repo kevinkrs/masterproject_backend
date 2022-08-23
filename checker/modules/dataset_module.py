@@ -41,7 +41,7 @@ class TransformerDataModule(pl.LightningDataModule):
             self.dataset[split] = self.dataset[split].map(
                 self.tokenizer_base,
                 batched=True,
-                remove_columns=["label"],
+               # remove_columns=["label"],
             )
             self.columns = [c for c in self.dataset[split].column_names if c in self.loader_columns]
             self.dataset[split].set_format(type="torch", columns=self.columns)
@@ -74,7 +74,8 @@ class TransformerDataModule(pl.LightningDataModule):
             # return_special_tokens_mask=True,
             truncation=True,
         )
-
         features["labels"] = dataset["label"]
+
+    # TODO: Transform binary labels [True, False,...] to [1,0; 0,1; ...]
 
         return features

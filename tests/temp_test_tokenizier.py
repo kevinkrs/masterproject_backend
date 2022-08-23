@@ -2,6 +2,7 @@ from checker.utils.transformer_tokenizer import tokenizer_base
 import os
 import json
 from datasets import load_dataset
+from checker.modules.dataset_module import TransformerDataModule
 
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,9 +19,13 @@ data = {"train": TRAIN_PATH, "val": VAL_PATH, "test": TEST_PATH}
 # Read data
 data_raw = load_dataset("csv", data_files=data)
 
-dataset_raw = data_raw.map(tokenizer_base, batched=True)
+# dataset_raw = data_raw.map(tokenizer_base, batched=True)
+#
+# dataset_cleaned = dataset_raw.remove_columns(["title","url", "person", 'statementdate', 'source', 'factcheckdate', 'factchecker', 'sources', 'long_text', 'short_text', 'text','Unnamed: 0','_id'])
+# tokenized_datasets = dataset_raw.rename_column("label", "labels")
 
-dataset_cleaned = dataset_raw.remove_columns(["title","url", "person", 'statementdate', 'source', 'factcheckdate', 'factchecker', 'sources', 'long_text', 'short_text', 'text','Unnamed: 0','_id'])
-tokenized_datasets = dataset_raw.rename_column("label", "labels")
+dataloader = TransformerDataModule(config["type"])
+dataloader.setup(data_raw)
+
 
 print("Finished")

@@ -1,9 +1,8 @@
 import json
 import logging
 import os
-import mlflow
 from datasets import load_dataset
-
+from checker.modules.dataset_module import TransformerDataModule
 from datetime import datetime
 from checker.model.transformer import TransformerModel
 from checker.utils.transformer_tokenizer import tokenizer_base
@@ -23,7 +22,6 @@ with open(os.path.join(base_dir, "checker/config/config.json")) as f:
     config = json.load(f)
 
 # set_random_seed(42)
-mlflow.set_experiment(config["model"])
 
 model_output_path = os.path.join(base_dir, config["model_output_path"])
 # Update full model output path
@@ -39,10 +37,9 @@ data = {"train": TRAIN_PATH, "val": VAL_PATH, "test": TEST_PATH}
 data_raw = load_dataset("csv", data_files=data)
 
 
-dataset_raw = data_raw.map(tokenizer_base, batched=True)
-
-dataset_cleaned = dataset_raw.remove_columns(["title","url", "person", 'statementdate', 'source', 'factcheckdate', 'factchecker', 'sources', 'long_text', 'short_text', 'text','Unnamed: 0','_id'])
-tokenized_datasets = dataset_cleaned.rename_column("label", "labels")
+dataloader = TransformerDataModule(config["type"])
+dataloader.setup(data_raw, "fit")
+#next(iter(dataloader.train_dataloader()))
 
 if config["from_ckp"]:
     model = TransformerModel(config, load_from_ckpt=True)
@@ -50,4 +47,4 @@ else:
     model = TransformerModel(config)
 
 
-model.train(tokenized_datasets)
+model.train(dataloader)

@@ -97,18 +97,8 @@ class TransformerModel:
 
 
 
-    def train(self, dataset):
-        train_dataloader = DataLoader(
-            dataset["train"],
-            batch_size=self.config["batch_size"],
-            shuffle=True,
-        )
-
-        val_dataloader = DataLoader(
-            dataset["val"], batch_size=16, shuffle=False,
-        )
-
-        self.trainer.fit(self.model, train_dataloader, val_dataloader)
+    def train(self, datamodule):
+        self.trainer.fit(self.model, datamodule)
 
     def compute_metrics(self, data, split: Optional[str] = None) -> Dict:
         expected_labels = [datapoint["label"] for datapoint in data]
@@ -132,10 +122,7 @@ class TransformerModel:
             f"{split_prefix} true positive": tp,
         }
 
-    def predict(self, data):
-        dataloader = DataLoader(
-            data, batch_size=self.config["batch_size"], pin_memory=True
-        )
+    def predict(self, datamodule):
         self.model.eval()
         logits = []
         device = torch.device("mps")

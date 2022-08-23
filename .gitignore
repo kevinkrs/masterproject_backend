@@ -3,4 +3,5 @@
 checker/utils/config_secrets.py
 saved_models
 mlruns
-__pycache__
+*pycache*
+

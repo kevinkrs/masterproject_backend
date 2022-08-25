@@ -109,10 +109,10 @@ class TransformerModel:
     def validate_model(self, datamodule):
         self.trainer.validate(self.model, datamodule)
 
-    def compute_metrics(self, datamodule, split: Optional[str] = None) -> Dict:
-        logits = self.predict(datamodule)
+    def compute_metrics(self, dataloader, split: Optional[str] = None) -> Dict:
+        logits = self.predict(dataloader)
         probs = torch.cat(logits, axis=0).cpu().detach().numpy()
-        labels = datamodule.dataset["val"].features["labels"]
+        labels = dataloader.dataset.data.columns.get('07')
         preds = np.argmax(probs, axis=1)
         accuracy = accuracy_score(labels, preds)
         f1 = f1_score(labels, preds)
@@ -131,14 +131,13 @@ class TransformerModel:
             f"{split_prefix} true positive": tp,
         }
 
-    def predict(self, datamodule):
-        self.model.eval()
+    def predict(self, dataloader):
         logits = []
         device = torch.device("mps")
         self.model.to(device)
         # detaching of tensors from current computantional graph
         with torch.no_grad():
-            for batch in datamodule:
+            for batch_idx, batch in enumerate(dataloader):
                 output = self.model(
                     input_ids=batch["input_ids"].to(device),
                     attention_mask=batch["attention_mask"].to(device),

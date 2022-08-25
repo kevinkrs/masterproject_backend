@@ -4,5 +4,7 @@ config_secrets.py
 saved_models/roberta-based
 saved_models/bert-based
 mlruns
-*pycache*
+__pycache__
+venv
+
 

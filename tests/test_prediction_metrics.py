@@ -26,9 +26,9 @@ def test_run_metric_calculation():
     model = TransformerModel(config, load_from_ckpt=True)
 
     dataloader_val = datamodule.val_dataloader()
-    dataloader_train = datamodule.test_dataloader()
+    dataloader_test = datamodule.test_dataloader()
     LOGGER.info("Evaluating model...")
     val_metrics = model.compute_metrics(dataloader_val, split="val")
     LOGGER.info(f"Val metrics: {val_metrics}")
-    test_metrics = model.compute_metrics(dataloader_train, split="test")
+    test_metrics = model.compute_metrics(dataloader_test, split="test")
     LOGGER.info(f"Test metrics: {test_metrics}")

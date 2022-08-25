@@ -22,7 +22,6 @@ class TransformerDataModule(pl.LightningDataModule):
         super().__init__()
 
 
-
         # Read data
         self.model_name_or_path = model_name_or_path
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -46,7 +45,6 @@ class TransformerDataModule(pl.LightningDataModule):
             self.columns = [c for c in self.dataset[split].column_names if c in self.loader_columns]
             self.dataset[split].set_format(type="torch", columns=self.columns)
 
-        self.eval_splits = [x for x in self.dataset.keys() if "validation" in x]
 
     def train_dataloader(self):
         return DataLoader(self.dataset["train"], batch_size=self.config["batch_size"], shuffle=True)
@@ -55,10 +53,8 @@ class TransformerDataModule(pl.LightningDataModule):
         return DataLoader(self.dataset["val"], batch_size=16, shuffle=False)
 
     def test_dataloader(self):
-        if len(self.eval_splits) == 1:
-            return DataLoader(self.dataset["test"], batch_size=self.eval_batch_size)
-        elif len(self.eval_splits) > 1:
-            return [DataLoader(self.dataset[x], batch_size=self.eval_batch_size) for x in self.eval_splits]
+        return DataLoader(self.dataset["test"], batch_size=self.config["test_batch_size"], shuffle=False)
+
 
     def tokenizer_base(self, dataset):
 

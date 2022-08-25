@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import mlflow
+import torch
 from datasets import load_dataset
 
 from datetime import datetime
@@ -82,13 +83,14 @@ if __name__ == "__main__":
             LOGGER.info("Training model...")
             model.train(datamodule)
 
+
         validation = model.validate_model(datamodule)
         dataloader_val = datamodule.val_dataloader()
-        dataloader_train = datamodule.test_dataloader()
+        dataloader_test = datamodule.test_dataloader()
         LOGGER.info("Evaluating model...")
         val_metrics = model.compute_metrics(dataloader_val, split="val")
         LOGGER.info(f"Val metrics: {val_metrics}")
-        test_metrics = model.compute_metrics(dataloader_train, split="test")
+        test_metrics = model.compute_metrics(dataloader_test, split="test")
         LOGGER.info(f"Test metrics: {test_metrics}")
         mlflow.log_metrics(val_metrics)
         mlflow.log_metrics(test_metrics)

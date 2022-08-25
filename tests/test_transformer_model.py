@@ -29,16 +29,6 @@ def test_model():
     VAL_PATH = os.path.join(base_dir, config["val_data_path"])
     TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
-    # Only if required
-    # loader = Dataloader()
-    # loader.load_data_from_db(RAW_PATH)
-    # loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
-
-    # set_random_seed(42)
-
-    model_output_path = os.path.join(base_dir, config["model_output_path"])
-    # Update full model output path
-
     datamodule = TransformerDataModule(config["type"])
     datamodule.setup("fit")
     #next(iter(dataloader.train_dataloader()))

@@ -4,18 +4,17 @@ import numpy as np
 import mlflow
 import os
 
-from torch.utils.data import DataLoader
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
 from typing import Optional, Dict
+from checker.model.base import BaseModel
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
-#from checker.model.base import BaseModel
 
 
 class LModule(pl.LightningModule):
@@ -43,14 +42,8 @@ class LModule(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         outputs = self(**batch)
-        val_loss, logits = outputs[:2]
-        # if self.hparams.num_labels > 1:
-        #     preds = torch.argmax(logits, axis=1)
-        # elif self.hparams.num_labels == 1:
-        #     preds = logits.squeeze()
-        #
-        # labels = batch["labels"]
-        self.log("val_loss", val_loss)
+        self.log("val_loss", outputs[0])
+
         return outputs[0]
 
     def validation_epoch_end(self, outputs) -> None:
@@ -72,7 +65,7 @@ class LModule(pl.LightningModule):
 
 
 # Model Definition
-class TransformerModel:
+class TransformerModel(BaseModel):
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -80,7 +73,7 @@ class TransformerModel:
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
                                                                    config["model_output_path"],
-                                                                   "epoch=epoch=0-val_loss=val_loss=0.5034.ckpt"),
+                                                                   f"trained_model_{config['type']}.ckpt"),
                                                       )
 
         else:
@@ -90,7 +83,7 @@ class TransformerModel:
                             monitor="val_loss",
                             mode="min",
                             dirpath=model_output_path,
-                            filename="epoch={epoch}-val_loss={val_loss:.4f}",
+                            filename=f"trained_model_{config['type']}",
                             save_weights_only=True,
                         )
             self.trainer = Trainer(
@@ -102,7 +95,6 @@ class TransformerModel:
             )
 
 
-
     def train(self, datamodule):
         self.trainer.fit(self.model, datamodule)
 
@@ -112,7 +104,7 @@ class TransformerModel:
     def compute_metrics(self, dataloader, split: Optional[str] = None) -> Dict:
         logits = self.predict(dataloader)
         probs = torch.cat(logits, axis=0).cpu().detach().numpy()
-        labels = dataloader.dataset.data.columns.get('07')
+        labels = dataloader.dataset.data.columns[7]
         preds = np.argmax(probs, axis=1)
         accuracy = accuracy_score(labels, preds)
         f1 = f1_score(labels, preds)
@@ -133,16 +125,16 @@ class TransformerModel:
 
     def predict(self, dataloader):
         logits = []
-        device = torch.device("mps")
-        self.model.to(device)
+
+        self.model.cuda()
         # detaching of tensors from current computantional graph
         with torch.no_grad():
             for batch_idx, batch in enumerate(dataloader):
                 output = self.model(
-                    input_ids=batch["input_ids"].to(device),
-                    attention_mask=batch["attention_mask"].to(device),
-                    # token_type_ids=batch['token_type_ids'].to(device),
-                    labels=batch["labels"].to(device),
+                    input_ids=batch["input_ids"].cuda(),
+                    attention_mask=batch["attention_mask"].cuda(),
+                    # token_type_ids=batch['token_type_ids'].cuda(),
+                    labels=batch["labels"].cuda(),
                 )
                 logits.append(output[1])  # we only return the logits tensor
 

@@ -1,7 +1,8 @@
 .DS_Store
 .idea
 config_secrets.py
-saved_models
+saved_models/roberta-based
+saved_models/bert-based
 mlruns
 *pycache*
 

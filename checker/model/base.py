@@ -1,20 +1,16 @@
 from abc import ABC
 from abc import abstractmethod
 from typing import Dict
-from typing import List
 from typing import Optional
-
 import numpy as np
 
-from checker.utils.features import Datapoint
 
 
 class BaseModel(ABC):
     @abstractmethod
     def train(
         self,
-        train_datapoints: List[Datapoint],
-        val_datapoints: List[Datapoint],
+        datamodule,
         cache_featurizer: Optional[bool] = False,
     ) -> None:
         """
@@ -27,7 +23,7 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def predict(self, datapoints: List[Datapoint]) -> np.array:
+    def predict(self, dataloader) -> np.array:
         """
         Performs inference of model on collection of datapoints. Returns an
         array of model predictions. This should only be called after the model
@@ -39,7 +35,7 @@ class BaseModel(ABC):
 
     @abstractmethod
     def compute_metrics(
-        self, eval_datapoints: List[Datapoint], split: Optional[str] = None
+        self, dataloader, split: Optional[str] = None
     ) -> Dict:
         """
         Compute a set of model-specifc metrics on the provided set of datapoints.

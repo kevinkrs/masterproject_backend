@@ -44,15 +44,14 @@ class LModule(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         outputs = self(**batch)
         val_loss, logits = outputs[:2]
-        if self.hparams.num_labels > 1:
-            preds = torch.argmax(logits, axis=1)
-        elif self.hparams.num_labels == 1:
-            preds = logits.squeeze()
-
-        labels = batch["labels"]
-
+        # if self.hparams.num_labels > 1:
+        #     preds = torch.argmax(logits, axis=1)
+        # elif self.hparams.num_labels == 1:
+        #     preds = logits.squeeze()
+        #
+        # labels = batch["labels"]
         self.log("val_loss", val_loss)
-        return {"loss": val_loss, "preds": preds, "labels": labels}
+        return outputs[0]
 
     def validation_epoch_end(self, outputs) -> None:
         avg_val_loss = float(sum(outputs) / len(outputs))
@@ -81,7 +80,7 @@ class TransformerModel:
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
                                                                    config["model_output_path"],
-                                                                   "epoch=epoch=4-val_loss=val_loss=0.3300.ckpt"),
+                                                                   "epoch=epoch=0-val_loss=val_loss=0.5034.ckpt"),
                                                       )
 
         else:
@@ -107,15 +106,18 @@ class TransformerModel:
     def train(self, datamodule):
         self.trainer.fit(self.model, datamodule)
 
-    def compute_metrics(self, data, split: Optional[str] = None) -> Dict:
-        expected_labels = [datapoint["label"] for datapoint in data]
-        logits = self.predict(data)
+    def validate_model(self, datamodule):
+        self.trainer.validate(self.model, datamodule)
+
+    def compute_metrics(self, datamodule, split: Optional[str] = None) -> Dict:
+        logits = self.predict(datamodule)
         probs = torch.cat(logits, axis=0).cpu().detach().numpy()
+        labels = datamodule.dataset["val"].features["labels"]
         preds = np.argmax(probs, axis=1)
-        accuracy = accuracy_score(expected_labels, preds)
-        f1 = f1_score(expected_labels, preds)
-        auc = roc_auc_score(expected_labels, preds)
-        conf_mat = confusion_matrix(expected_labels, preds)
+        accuracy = accuracy_score(labels, preds)
+        f1 = f1_score(labels, preds)
+        auc = roc_auc_score(labels, preds)
+        conf_mat = confusion_matrix(labels, preds)
         tn, fp, tp, fn = conf_mat.ravel()
         print(f"Accuracy: {accuracy}, F1: {f1}, AUC: {auc}")
         split_prefix = "" if split is None else split
@@ -136,12 +138,12 @@ class TransformerModel:
         self.model.to(device)
         # detaching of tensors from current computantional graph
         with torch.no_grad():
-            for idx, batch in enumerate(datamodule):
+            for batch in datamodule:
                 output = self.model(
                     input_ids=batch["input_ids"].to(device),
                     attention_mask=batch["attention_mask"].to(device),
                     # token_type_ids=batch['token_type_ids'].to(device),
-                    labels=batch["label"].to(device),
+                    labels=batch["labels"].to(device),
                 )
                 logits.append(output[1])  # we only return the logits tensor
 

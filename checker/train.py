@@ -7,6 +7,7 @@ from datasets import load_dataset
 from datetime import datetime
 from model.transformer import TransformerModel
 from utils.dataloader import Dataloader
+from modules.dataset_module import TransformerDataModule
 from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
@@ -68,19 +69,9 @@ if __name__ == "__main__":
             loader.load_data_from_db(RAW_PATH)
             loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
-        # Read data
-        data_train = {"train": TRAIN_PATH}
-        data_val = {"val": VAL_PATH}
-        data_test = {"test": TEST_PATH}
-        # Read data
-        train_raw = load_dataset("csv", data_files=data_train)
-        val_raw = load_dataset("csv", data_files=data_val)
-        test_raw = load_dataset("csv", data_files=data_test)
-
-        train_datapoints = train_raw.map(tokenizer_base, batched=True)
-        val_datapoints = val_raw.map(tokenizer_base, batched=True)
-        test_datapoints = test_raw.map(tokenizer_base, batched=True)
-
+        # Datamodule handles loading the data and tokenizing it
+        datamodule = TransformerDataModule(config["type"])
+        datamodule.setup("fit")
 
         if config["from_ckp"]:
             model = TransformerModel(config, load_from_ckpt=True)
@@ -89,14 +80,15 @@ if __name__ == "__main__":
 
         if config["train"]:
             LOGGER.info("Training model...")
-            model.train(train_datapoints, val_datapoints)
+            model.train(datamodule)
 
-
+        validation = model.validate_model(datamodule)
+        LOGGER.info(f"Trainer validation: {validation}")
         mlflow.log_params(model.get_params())
         LOGGER.info("Evaluating model...")
-        val_metrics = model.compute_metrics(val_datapoints, split="val")
+        val_metrics = model.compute_metrics(datamodule.dataset['val'], split="val")
         LOGGER.info(f"Val metrics: {val_metrics}")
-        test_metrics = model.compute_metrics(test_datapoints, split="test")
+        test_metrics = model.compute_metrics(datamodule.dataset['test'], split="test")
         LOGGER.info(f"Test metrics: {test_metrics}")
         mlflow.log_metrics(val_metrics)
         mlflow.log_metrics(test_metrics)

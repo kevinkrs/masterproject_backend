@@ -14,7 +14,7 @@
   "batch_size": 64,
   "max_seq_length": 64,
   "learning_rate": 3e-5,
-  "num_epochs": 2,
+  "num_epochs": 1,
   "long_text_summarization": false,
   "update_data": false,
   "accelerator": "mps",

@@ -6,7 +6,7 @@ from datasets import load_dataset
 
 from datetime import datetime
 from model.transformer import TransformerModel
-#from utils.dataloader import load_data_from_db, create_model_data
+from utils.dataloader import Dataloader
 from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
@@ -64,8 +64,9 @@ if __name__ == "__main__":
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
         if config["update_data"]:
-            load_data_from_db(RAW_PATH)
-            create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH, config)
+            loader = Dataloader()
+            loader.load_data_from_db(RAW_PATH)
+            loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
         # Read data
         data_train = {"train": TRAIN_PATH}

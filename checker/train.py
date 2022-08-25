@@ -2,13 +2,14 @@ import json
 import logging
 import os
 import mlflow
-import pandas as pd
-
+import torch
+from datasets import load_dataset
 
 from datetime import datetime
-from model.roberta_based import RobertaModel
-# from utils.dataloader import load_data_from_db, create_model_data TODO: Can't fix module not found error...
-from utils.roberta_tokenizer import tokenizer_base
+from model.transformer import TransformerModel
+from utils.dataloader import Dataloader
+from modules.dataset_module import TransformerDataModule
+from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -41,7 +42,7 @@ if __name__ == "__main__":
     # set some environment variables
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "checker/config/roberta_v1.json")) as f:
+    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
 
     # set_random_seed(42)
@@ -65,37 +66,31 @@ if __name__ == "__main__":
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
         if config["update_data"]:
-            load_data_from_db(RAW_PATH)
-            create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH, config)
+            loader = Dataloader()
+            loader.load_data_from_db(RAW_PATH)
+            loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
-        # Read data
-        train_raw = pd.read_csv(TRAIN_PATH)
-        val_raw = pd.read_csv(VAL_PATH)
-        test_raw = pd.read_csv(TEST_PATH)
+        # Datamodule handles loading the data and tokenizing it
+        datamodule = TransformerDataModule(config["type"])
+        datamodule.setup("fit")
 
-        # Tokenize data
-        train_datapoints = tokenizer_base(train_raw)
-        val_datapoints = tokenizer_base(val_raw)
-        test_datapoints = tokenizer_base(test_raw)
-
-        if config["model"] == "roberta":
-            if config["from_ckp"]:
-                model = RobertaModel(config, load_from_ckpt=True)
-            else:
-                model = RobertaModel(config)
+        if config["from_ckp"]:
+            model = TransformerModel(config, load_from_ckpt=True)
         else:
-            raise ValueError(f"Invalid model type {config['model']} provided")
+            model = TransformerModel(config)
 
         if config["train"]:
             LOGGER.info("Training model...")
-            model.train(train_datapoints, val_datapoints)
+            model.train(datamodule)
 
 
-        mlflow.log_params(model.get_params())
+        validation = model.validate_model(datamodule)
+        dataloader_val = datamodule.val_dataloader()
+        dataloader_test = datamodule.test_dataloader()
         LOGGER.info("Evaluating model...")
-        val_metrics = model.compute_metrics(val_datapoints, split="val")
+        val_metrics = model.compute_metrics(dataloader_val, split="val")
         LOGGER.info(f"Val metrics: {val_metrics}")
-        test_metrics = model.compute_metrics(test_datapoints, split="test")
+        test_metrics = model.compute_metrics(dataloader_test, split="test")
         LOGGER.info(f"Test metrics: {test_metrics}")
         mlflow.log_metrics(val_metrics)
         mlflow.log_metrics(test_metrics)

@@ -1,5 +1,6 @@
 .DS_Store
 .idea
-checker/utils/config_secrets.py
-saved_models
+config_secrets.py
+saved_models/roberta-based
+saved_models/bert-based
 mlruns

@@ -109,20 +109,6 @@ class Dataloader:
 
         return s
 
-    def concat_columns(self, df):
-        cols_title = ["title", "statementdate", "person", "source"]  # Current data
-        cols_short_text = ["short_text", "statementdate", "person", "source"]
-
-        if self.config["train_target"] == "title":
-            cols = cols_title
-        else:
-            cols = cols_short_text
-
-        df["text"] = (
-            df[cols].copy(True).apply(lambda row: " ".join(row.values.astype(str)), axis=1)
-        )
-
-        return df
 
     def preprocess_cleaning(self, raw_path):
         names = [
@@ -145,11 +131,10 @@ class Dataloader:
         df_raw = df_raw.drop(index=0)
         # df_raw = df_raw[:100] # Only for debug
         df_cleaned = self.drop_empty(df_raw)
-        df_with_target = self.concat_columns(df_cleaned)
 
         # Apply binary label
-        df_with_target["label"] = df_with_target.label.apply(self.get_binary_label)
-        df = df_with_target[names]
+        df_cleaned["label"] = df_cleaned.label.apply(self.get_binary_label)
+        df = df_cleaned[names]
 
         # Transform label to expected torch target shape (x,2)
         # True, False = [1,0] | [0,1]

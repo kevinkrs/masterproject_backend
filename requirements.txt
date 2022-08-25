@@ -148,7 +148,7 @@ toml==0.10.2
 tomli==2.0.1
 tomlkit==0.11.4
 torch==1.12.1
-torchaudio==0.13.0.dev20220820
+torchaudio==0.12.1
 torchmetrics==0.9.3
 torchvision==0.13.1
 tqdm==4.64.0

@@ -8,7 +8,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
 from typing import Optional, Dict
-from checker.model.base import BaseModel
+# from checker.model.base import BaseModel,
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -64,8 +64,8 @@ class LModule(pl.LightningModule):
         return optimizer
 
 
-# Model Definition
-class TransformerModel(BaseModel):
+# Model Definition: Add BaseModel once module import error fixed
+class TransformerModel():
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))

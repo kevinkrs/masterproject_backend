@@ -2,14 +2,11 @@ import json
 import logging
 import os
 import mlflow
-import torch
-from datasets import load_dataset
 
 from datetime import datetime
 from model.transformer import TransformerModel
 from utils.dataloader import Dataloader
 from modules.dataset_module import TransformerDataModule
-from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",

@@ -154,6 +154,7 @@ torchvision==0.13.1
 tqdm==4.64.0
 transformers==4.21.1
 typing_extensions==4.3.0
+upgrade-ensurepip==0.2.1
 urllib3==1.26.11
 vine==5.0.0
 virtualenv==20.16.3

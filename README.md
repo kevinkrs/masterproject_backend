@@ -4,9 +4,10 @@ Project structure oriented by the project of mihail911. Thank you for such a bea
 
 
 # Setup
-- Create a virtual environment on your machine: `python -m venv/venv`
-- Run `pip install -r requirements.txt` 
-- 
+- Navigate into the project folder and run `make setup`
+  - Creates virtualenv
+  - Upgrades pip and installs all relevant requirements
+
 ## Running model on M1 Mac
 Currently, the support of torch on M1 Metall is a nightly build. Not all features are available.
 Following settings are required

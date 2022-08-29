@@ -95,6 +95,7 @@ if __name__ == "__main__":
         metrics = ["val_metrics", "test_metrics"]
         metric_objects = [val_metrics, test_metrics]
 
+        # Additional Note: Logs caused git pull to fail on windows machine
         # for metric in metrics:
         #     with open(
         #             f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"

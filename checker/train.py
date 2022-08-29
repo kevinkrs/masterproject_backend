@@ -95,10 +95,10 @@ if __name__ == "__main__":
         metrics = ["val_metrics", "test_metrics"]
         metric_objects = [val_metrics, test_metrics]
 
-        for metric in metrics:
-            with open(
-                    f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
-            ) as i:
-                json.dump([str(x) for x in metric_objects], i)
+        # for metric in metrics:
+        #     with open(
+        #             f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
+        #     ) as i:
+        #         json.dump([str(x) for x in metric_objects], i)
 
         mlflow.end_run()

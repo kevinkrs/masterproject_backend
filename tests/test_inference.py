@@ -2,12 +2,15 @@ import pandas as pd
 import torch
 import os
 import json
+import numpy as np
+import requests
 
 from checker.model.transformer import LModule
 from checker.modules.dataset_module import TransformerDataModule
 from pytorch_lightning.trainer import Trainer
 from torch.utils.data import DataLoader
 from datasets import load_dataset
+from transformers import BertTokenizerFast
 
 def test_inference_mode():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,45 +19,40 @@ def test_inference_mode():
         config = json.load(f)
 
     data = {
-        'title': 'Donald trump states that he still is the president of the united states',
+        'text': 'Texas public high school graduation rate is at 90% overall.',
         'statementdate': '2022-07-29'}
 
-    with open("test.json", "w") as f:
-        json.dump(data, f)
 
-    datafiles = {'inference': 'test.json'}
-    datamodule = TransformerDataModule()
-    dataset = load_dataset("json", data_files=datafiles)
-    dataset['inference'] = dataset['inference'].map(
-                datamodule.tokenizer_base,
-                batched=True,
-            )
-    dataloader = DataLoader(dataset['inference'], batch_size=1)
-    model = LModule(os.path.join(base_dir, config['model_output_path'], f"trained_model_{config['type']}-{config['version']}.ckpt"))
-    trainer = Trainer()
+    # Get tokenizer and tokenize input data
+    tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+    tokenized_data = tokenizer(data['text'], data['statementdate'], return_attention_mask=True, return_tensors='pt', padding="max_length",)
 
+    # Load model from checkpoint
+    model = LModule('bert-base-uncased')
+    checkpoint = torch.load(os.path.join(base_dir, config['model_output_path'], f"trained_model_{config['type']}-{config['version']}.ckpt"),
+                            map_location=torch.device('cpu'))
+    model.load_state_dict(checkpoint["state_dict"])
+    model.eval()
     # 1. Get prediction as list
-    logits = trainer.predict(model, dataloader)
-    # 2. Transform list to torch tensor
-    preds = torch.cat(logits, dim=0)
-    # 3. Run Softmax to get max values = Probabilities
-    probs = torch.nn.functional.softmax(preds, dim=-1)
-
+    logits = []
+    with torch.no_grad():
+        output = model(**tokenized_data)
+        logits.append(output.logits)
+    # # 2. Transform list to torch tensor
+    preds_tp = torch.cat(logits, dim=0)
+    # # 3. Run Softmax to get max values = Probabilities
+    probs = torch.nn.functional.softmax(preds_tp, dim=-1).squeeze()
+    probs_np = torch.cat(logits, axis=0).cpu().detach().numpy()
+    preds = np.argmax(probs_np, axis=1)
+    predicted_class_id = preds.max().item()
+    pred_label = model.config.id2label[predicted_class_id]
+    if pred_label == 'LABEL_0':
+        label = 'FAKE'
+    else:
+        label = 'TRUE'
+    print(f"{label}: {probs.max}")
     print(probs)
 
 
-    # Load model directly via torch
-    # model = LModule('bert-base-uncased')
-    # checkpoint = torch.load(os.path.join(base_dir, config['model_output_path'], f"trained_model_{config['type']}-{config['version']}.ckpt"),
-    #                         map_location=torch.device('cpu'))
-    # model.load_state_dict(checkpoint["state_dict"])
-    # model.eval()
-    # logits = []
-    # with torch.no_grad():
-    #     for batch_idx, batch in enumerate(dataloader):
-    #         output = model(
-    #             input_ids=batch["input_ids"],
-    #             attention_mask=batch["attention_mask"],
-    #             labels=batch["labels"],
-    #         )
-    #         logits.append(output[1])  # we only return the logits tensor
+def test_inference_api():
+    pass

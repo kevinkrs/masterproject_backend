@@ -1,13 +1,13 @@
 import os
 import json
 import torch
+import numpy as np
 
-from torch.utils.data import DataLoader
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from checker.model.transformer import TransformerModel
-from checker.modules.dataset_module import TransformerDataModule
-from datasets import load_dataset
+from checker.model.transformer import LModule
+from transformers import BertTokenizerFast
+
 
 app = FastAPI()
 
@@ -22,27 +22,52 @@ base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 with open(os.path.join(base_dir, "checker/config/config.json")) as f:
     config = json.load(f)
 
-def get_prediction(features):
-    model = TransformerModel(config, load_from_ckpt=True)
-    dataloader = DataLoader(features, batch_size=64, shuffle=False)
-    logits = model.predict(dataloader)
-    predictions = torch.nn.functional.softmax(logits, dim=-1)
-    predicted_class_id = logits.argmax().item()
-    pred_label = model.config.id2label[predicted_class_id]
-    print(f"{pred_label}: {predictions[0][predicted_class_id]}")
-    return (pred_label, predictions[0][predicted_class_id])
+class Inference:
+    def __init__(self):
+        self.model = LModule('bert-base-uncased')
+        checkpoint = torch.load(
+            os.path.join(base_dir, config['model_output_path'],
+                         f"trained_model_{config['type']}-{config['version']}.ckpt"),
+            map_location=torch.device('cpu'))
+        self.model.load_state_dict(checkpoint["state_dict"])
+    def get_prediction(self, data):
+        tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+        tokenized_data = tokenizer(data['text'], data['statementdate'], return_attention_mask=True, return_tensors="pt",
+                                   padding="max_length", )
+
+        # Load model from checkpoint
+
+        self.model.eval()
+        # 1. Get prediction as list
+        logits = []
+        with torch.no_grad():
+            output = self.model(**tokenized_data)
+            logits = logits.append(output.logits)
 
 
-@app.post("/api/predict")
-# TODO: Not sure if this is the right way to load and tokenize data, since load_dataset is quite complex
-async def inference(data: json):
-    data_files = {"inference": data}
-    datamodule = TransformerDataModule()
-    dataset = load_dataset("json", data_files=data_files, split="inference")
-    features = datamodule.tokenizer_base(dataset)
-    resp = get_prediction(features)
+        return logits
 
-    return resp
+
+    @app.post("/api/predict")
+    # SCHEMA: text - statementdate
+    async def inference(self, data: json):
+        logits = self.get_prediction(data)
+        # 2. Transform list to torch tensor
+        preds_tp = torch.cat(logits, dim=0)
+        # 3. Run Softmax to get max values = Probabilities
+        probs = torch.nn.functional.softmax(preds_tp, dim=-1).squeeze()
+        probs_np = torch.cat(logits, axis=0).cpu().detach().numpy()
+        preds = np.argmax(probs_np, axis=1)
+        predicted_class_id = preds.max().item()
+        pred_label = self.model.config.id2label[predicted_class_id]
+        if pred_label == 'LABEL_0':
+            label = 'FAKE'
+        else:
+            label = 'TRUE'
+        print(f"{label}: {probs.max}")
+        print(probs)
+
+        return pred_label
 
 
 # SCHEMA of json body

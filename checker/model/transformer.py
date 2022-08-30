@@ -21,7 +21,7 @@ class LModule(pl.LightningModule):
     def __init__(self, model_name_or_path: str):
         super().__init__()
         self.config = AutoConfig.from_pretrained(
-            model_name_or_path,
+            'bert-base-uncased',
             num_labels=2,
             output_attentions=False,
             output_hidden_states=False,
@@ -62,6 +62,9 @@ class LModule(pl.LightningModule):
         optimizer = torch.optim.Adam(self.parameters(), lr=3e-5)
 
         return optimizer
+
+    def predict_step(self, batch, batch_idx):
+        return self(batch)
 
 
 # Model Definition: Add BaseModel once module import error fixed

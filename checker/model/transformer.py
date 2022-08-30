@@ -73,7 +73,7 @@ class TransformerModel():
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
                                                                    config["model_output_path"],
-                                                                   f"trained_model_{config['type']}_{config['version']}.ckpt"),
+                                                                   f"trained_model_{config['type']}-{config['version']}.ckpt"),
                                                       )
 
         else:
@@ -83,7 +83,7 @@ class TransformerModel():
                             monitor="val_loss",
                             mode="min",
                             dirpath=model_output_path,
-                            filename=f"trained_model_{config['type']}",
+                            filename=f"trained_model_{config['type']-{config['version']}-",
                             save_weights_only=True,
                         )
             self.trainer = Trainer(

@@ -18,7 +18,7 @@ def test_run_metric_calculation():
 
     with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
-    datamodule = TransformerDataModule(config["type"])
+    datamodule = TransformerDataModule()
     datamodule.setup("fit")
     # next(iter(dataloader.train_dataloader()))
 

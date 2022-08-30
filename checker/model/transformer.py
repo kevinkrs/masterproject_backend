@@ -125,9 +125,9 @@ class TransformerModel():
 
     def predict(self, dataloader):
         logits = []
-        self.model.cuda()
-        # detaching of tensors from current computantional graph
         self.model.eval()
+        # detaching of tensors from current computantional graph
+        self.model.cpu()
         with torch.no_grad():
             for batch_idx, batch in enumerate(dataloader):
                 output = self.model(

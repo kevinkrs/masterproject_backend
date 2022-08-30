@@ -2,14 +2,11 @@ import json
 import logging
 import os
 import mlflow
-import torch
-from datasets import load_dataset
 
 from datetime import datetime
 from model.transformer import TransformerModel
 from utils.dataloader import Dataloader
 from modules.dataset_module import TransformerDataModule
-from utils.transformer_tokenizer import tokenizer_base
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -98,10 +95,11 @@ if __name__ == "__main__":
         metrics = ["val_metrics", "test_metrics"]
         metric_objects = [val_metrics, test_metrics]
 
-        for metric in metrics:
-            with open(
-                    f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
-            ) as i:
-                json.dump([str(x) for x in metric_objects], i)
+        # Additional Note: Logs caused git pull to fail on windows machine
+        # for metric in metrics:
+        #     with open(
+        #             f"{base_dir}/logs/{metric}_{config['model']}_{datetime.now()}.json", "w"
+        #     ) as i:
+        #         json.dump([str(x) for x in metric_objects], i)
 
         mlflow.end_run()

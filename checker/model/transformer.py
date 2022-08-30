@@ -73,7 +73,7 @@ class TransformerModel():
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
                                                                    config["model_output_path"],
-                                                                   f"trained_model_{config['type']}.ckpt"),
+                                                                   f"trained_model_{config['type']}_{config['version']}.ckpt"),
                                                       )
 
         else:

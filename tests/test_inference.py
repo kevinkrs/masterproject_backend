@@ -7,6 +7,7 @@ from checker.model.transformer import LModule
 from checker.modules.dataset_module import TransformerDataModule
 from pytorch_lightning.trainer import Trainer
 from torch.utils.data import DataLoader
+from datasets import load_dataset
 
 def test_inference_mode():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,14 +16,20 @@ def test_inference_mode():
         config = json.load(f)
 
     data = {
-            'title': 'Donald trump states that he still is the president of the united states',
-            'statementdate': '2022-07-29'}
+        'title': 'Donald trump states that he still is the president of the united states',
+        'statementdate': '2022-07-29'}
 
+    with open("test.json", "w") as f:
+        json.dump(data, f)
 
-
+    datafiles = {'inference': 'test.json'}
     datamodule = TransformerDataModule()
-    features = datamodule.tokenizer_base(data)
-    dataloader = DataLoader(features, batch_size=1)
+    dataset = load_dataset("json", data_files=datafiles)
+    dataset['inference'] = dataset['inference'].map(
+                datamodule.tokenizer_base,
+                batched=True,
+            )
+    dataloader = DataLoader(dataset['inference'], batch_size=1)
     model = LModule(os.path.join(base_dir, config['model_output_path'], f"trained_model_{config['type']}-{config['version']}.ckpt"))
     trainer = Trainer()
 

@@ -4,9 +4,8 @@ import os
 import json
 
 from checker.model.transformer import TransformerModel
-from checker.utils.transformer_tokenizer import tokenizer_base
-
-
+from checker.modules.dataset_module import TransformerDataModule
+from torch.utils.data import DataLoader
 
 def test_inference_mode():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,24 +13,40 @@ def test_inference_mode():
     with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
 
+    data = {
+            'title': 'Donald trump states that he still is the president of the united states',
+            'statementdate': '2022-07-29'}
 
-    model = TransformerModel(config, load_from_ckpt=True)
+    with open('test_json.json', 'w') as f:
+        json.dump(data, f)
 
-    data = [['The corona virus pandemic is a lie', False],
-            [
-                'It costs us about $33,000 a year (on average nationally) to lock somebody up. In California it costs about $75,000 a year.',
-                False],
-            [
-                'The Biden administration’s American Jobs Plan will be “the biggest non-defense investment in research and development in the history of our country.',
-                False],
-            ['Hillary replaces Kamala', False]]
 
-    df = pd.DataFrame(data, columns=['text', 'label'])
 
-    inputs = tokenizer_base(df)
+
+    def predict(config, features):
+        dataloader = DataLoader(features, batch_size=16)
+        logits = []
+        model = TransformerModel(config, load_from_ckpt=True)
+        # detaching of tensors from current computantional graph
+        model.eval()
+        with torch.no_grad():
+            for batch_idx, batch in enumerate(dataloader):
+                output = model(
+                    input_ids=batch["input_ids"].to_device('auto'),
+                    attention_mask=batch["attention_mask"].to_device('auto'),
+                    labels=batch["labels"].to_device('auto'),
+                )
+                logits.append(output[1])  # we only return the logits tensor
+
+        return logits
+
+
+    datamodule = TransformerDataModule()
+    features = datamodule.tokenizer_base(data)
+
 
     # 1. Get prediction as list
-    logits = model.predict(inputs)
+    logits = predict(config, features)
     # 2. Transform list to torch tensor
     preds = torch.cat(logits, dim=0)
     # 3. Run Softmax to get max values = Probabilities

@@ -18,12 +18,12 @@ class TransformerDataModule(pl.LightningDataModule):
     ]
 
 
-    def __init__(self, model_name_or_path: str):
+    def __init__(self):
         super().__init__()
 
 
         # Read data
-        self.model_name_or_path = model_name_or_path
+        #self.model_name_or_path = model_name_or_path
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         with open(os.path.join(base_dir, "checker/config/config.json")) as f:
             self.config = json.load(f)
@@ -70,7 +70,8 @@ class TransformerDataModule(pl.LightningDataModule):
             # return_special_tokens_mask=True,
             truncation=True,
         )
-        features["labels"] = dataset["label"]
+        if "label" in dataset:
+            features["labels"] = dataset["label"]
 
     # TODO: Transform binary labels [True, False,...] to [1,0; 0,1; ...]
 

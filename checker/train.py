@@ -68,7 +68,7 @@ if __name__ == "__main__":
             loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
         # Datamodule handles loading the data and tokenizing it
-        datamodule = TransformerDataModule(config["type"])
+        datamodule = TransformerDataModule()
         datamodule.setup("fit")
 
         if config["from_ckp"]:

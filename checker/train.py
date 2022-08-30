@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import mlflow
+import torch
 
 from datetime import datetime
 from model.transformer import TransformerModel
@@ -79,6 +80,9 @@ if __name__ == "__main__":
         if config["train"]:
             LOGGER.info("Training model...")
             model.train(datamodule)
+
+        script = model.to_torchscript()
+        torch.jit.save(script, os.path.join(base_dir, config["model_output_path"], f"trained_model_{config['type']}-{config['version']}.pt"))
 
 
         validation = model.validate_model(datamodule)

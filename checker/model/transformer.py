@@ -83,7 +83,7 @@ class TransformerModel():
                             monitor="val_loss",
                             mode="min",
                             dirpath=model_output_path,
-                            filename=f"trained_model_{config['type']-{config['version']}-",
+                            filename=f"trained_model_{config['type']}-{config['version']}",
                             save_weights_only=True,
                         )
             self.trainer = Trainer(

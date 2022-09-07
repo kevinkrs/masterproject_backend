@@ -48,8 +48,7 @@ if __name__ == "__main__":
 
     model_output_path = os.path.join(base_dir, config["model_output_path"])
     # Update full model output path
-    config["model_output_path"] = model_output_path
-    os.makedirs(model_output_path, exist_ok=True)
+    os.makedirs(config["model_output_path"] , exist_ok=True)
 
     # Copy config to model directory
     # copy(args.config_file, model_output_path)

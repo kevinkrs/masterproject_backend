@@ -12,14 +12,15 @@ import re
 
 class Dataloader:
     def __init__(self):
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        with open(os.path.join(base_dir, "config/config.json")) as f:
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        with open(os.path.join(base_dir, "checker/config/config.json")) as f:
             config = json.load(f)
         logger = logging.getLogger()
         nltk.download("stopwords")
         self.config = config
         self.logger = logger
         self.config_secrets = config_secrets
+        os.makedirs(os.path.join(base_dir, 'data', 'raw' ), exist_ok=True)
 
     def load_data_from_db(self, path: str):
         username = self.config_secrets.USERNAME
@@ -124,7 +125,6 @@ class Dataloader:
             "sources",
             "long_text",
             "short_text",
-            "text",
         ]
 
         df_raw = pd.read_csv(raw_path, sep=",")
@@ -136,17 +136,13 @@ class Dataloader:
         df_cleaned["label"] = df_cleaned.label.apply(self.get_binary_label)
         df = df_cleaned[names]
 
-        # Transform label to expected torch target shape (x,2)
-        # True, False = [1,0] | [0,1]
-        df["label"] = df["label"].apply(lambda x: [1, 0] if x else [0, 1])
+        df["label"] = df["label"].apply(lambda x: 1 if x else 0)
 
-        df["text"] = df.text.astype(str)
+        # df['short_text'] = df.short_text.apply(preprocess_summarizer)
 
-        # [OPTIONAL]
-        if self.config["long_text_summarization"]:
-            df["text"] = df.text.apply(self.preprocess_summarizer)
+        df['title'] = df.title.apply(self.text_preprocessing)
+        df['short_text'] = df.short_text.apply(self.text_preprocessing)
 
-        df["text"] = df.text.apply(self.text_preprocessing)
 
         # Save cleaned full dataset
         df.to_csv("data/full/df_cleaned.csv")

@@ -17,9 +17,9 @@ def test_dataloader():
     TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
     # Only if required
-    # loader = Dataloader()
-    # loader.load_data_from_db(RAW_PATH)
-    # loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
+    loader = Dataloader()
+    loader.load_data_from_db(RAW_PATH)
+    loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
 
     logger.info("Finish")

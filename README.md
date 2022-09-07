@@ -8,6 +8,11 @@ Project structure oriented by the project of mihail911. Thank you for such a bea
   - Creates virtualenv
   - Upgrades pip and installs all relevant requirements
 
+# Starting API server
+1. Navigate into the `api` folder
+2. Run `uvicorn main:app --reload` to start server
+3. Start calling API from any application
+
 ## Running model on M1 Mac
 Currently, the support of torch on M1 Metall is a nightly build. Not all features are available.
 Following settings are required

@@ -11,21 +11,26 @@ from pytorch_lightning.trainer import Trainer
 from torch.utils.data import DataLoader
 from datasets import load_dataset
 from transformers import BertTokenizerFast
-
+from checker.model.api.DataModel import DataModel
 def test_inference_mode():
+
+
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
     with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
 
-    data = {
+    raw = {
         'text': 'Texas public high school graduation rate is at 90% overall.',
         'statementdate': '2022-07-29'}
 
 
+    data = DataModel(**raw)
+
+
     # Get tokenizer and tokenize input data
     tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
-    tokenized_data = tokenizer(data['text'], data['statementdate'], return_attention_mask=True, return_tensors='pt', padding="max_length",)
+    tokenized_data = tokenizer(data.text, data.statementdate, return_attention_mask=True, return_tensors='pt', padding="max_length",)
 
     # Load model from checkpoint
     model = LModule('bert-base-uncased')
@@ -50,9 +55,16 @@ def test_inference_mode():
         label = 'FAKE'
     else:
         label = 'TRUE'
-    print(f"{label}: {probs.max}")
-    print(probs)
+    print(f"{label}: {probs.max()}")
+    print(probs.numpy())
 
 
 def test_inference_api():
-    pass
+    headers = {'Content-Type' : 'application/json'}
+    data = {
+        'text' : 'When the New York State Senate voted to legalize abortion in 1970, 12 Republican senators voted in favor of it.',
+        'statementdate' : '30-06-2022'
+    }
+    prediction = requests.post('http://127.0.0.1:8000/api/predict', headers=headers, json=data)
+    response = json.loads(prediction.content)
+    print(response)

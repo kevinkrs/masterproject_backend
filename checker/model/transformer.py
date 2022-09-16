@@ -15,7 +15,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
-
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class LModule(pl.LightningModule):
     def __init__(self, model_name_or_path: str):

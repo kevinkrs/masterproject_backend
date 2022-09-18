@@ -1,4 +1,5 @@
 /test/test_news.csv
 /train/train_news.csv
 /val/valid_news.csv
+/raw/raw_news_data.csv
 dvc_test

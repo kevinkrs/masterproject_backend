@@ -84,7 +84,7 @@ class Dataloader:
             [
                 word
                 for word in s.split()
-                if word not in stopwords.words("english") or word in ["not", "can"]
+                if word not in stopwords.words("english")
             ]
         )
         # Remove trailing whitespace

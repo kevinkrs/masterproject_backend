@@ -8,3 +8,7 @@ python-env:
 
 create-required-files:
 	touch config_secrets.py
+
+run-server:
+	cd checker/model && \
+	uvicorn main:app --reload

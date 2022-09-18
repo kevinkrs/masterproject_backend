@@ -81,3 +81,7 @@ def inference(data: DataModel):
     }
 
     return ORJSONResponse(response)
+
+@app.get("api/attentions")
+def attentions():
+    pass

@@ -6,7 +6,7 @@
   "test_data_path": "data/test/test_news.csv",
   "model_output_path": "saved_models/bert-based",
   "type": "bert-base-uncased",
-  "version": "v1",
+  "version": "v1-2",
   "train": true,
   "from_ckp": false,
   "evaluate": false,

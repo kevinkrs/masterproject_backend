@@ -13,6 +13,7 @@ import re
 class Dataloader:
     def __init__(self):
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.base_dir = base_dir
         with open(os.path.join(base_dir, "checker/config/config.json")) as f:
             config = json.load(f)
         logger = logging.getLogger()
@@ -20,15 +21,16 @@ class Dataloader:
         self.config = config
         self.logger = logger
         self.config_secrets = config_secrets
-        os.makedirs(os.path.join(base_dir, 'data', 'raw' ), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'raw'), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'full'), exist_ok=True)
 
     def load_data_from_db(self, path: str):
-        username = self.config_secrets.USERNAME
-        passwort = self.config_secrets.PASSWORD
-        host = self.config_secrets.HOST
-        host2 = self.config_secrets.HOST2
-        ssh_username = self.config_secrets.SSH_USERNAME
-        ssh_password = self.config_secrets.SSH_PASSWORD
+        username = self.config_secrets.USERNAME()
+        passwort = self.config_secrets.PASSWORD()
+        host = self.config_secrets.HOST()
+        host2 = self.config_secrets.HOST2()
+        ssh_username = self.config_secrets.SSH_USERNAME()
+        ssh_password = self.config_secrets.SSH_PASSWORD()
 
         tunnel_info = [
             {
@@ -62,7 +64,7 @@ class Dataloader:
 
             self.logger.info(f"Dataframe successfully written as csv to {path}")
 
-    def text_preprocessing(s: str):
+    def text_preprocessing(self, s: str):
         """
         - Lowercase the sentence
         - Change "'t" to "not"
@@ -110,7 +112,6 @@ class Dataloader:
 
         return s
 
-
     def preprocess_cleaning(self, raw_path):
         names = [
             "_id",
@@ -143,9 +144,8 @@ class Dataloader:
         df['title'] = df.title.apply(self.text_preprocessing)
         df['short_text'] = df.short_text.apply(self.text_preprocessing)
 
-
         # Save cleaned full dataset
-        df.to_csv("data/full/df_cleaned.csv")
+        df.to_csv(os.path.join(self.base_dir, "data/full/df_cleaned.csv"))
 
         return df
 
@@ -156,6 +156,21 @@ class Dataloader:
         train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
         valid = train_valid.drop(train.index)  # 10%
         test = df.drop(train_valid.index)  # 10%
+
+        # remove file name from train_path
+        train_path_dir = train_path.split("\\")[:-1]
+        train_path_dir = "/".join(train_path_dir)
+        os.makedirs(train_path_dir, exist_ok=True)
+
+        # remove file name from valid_path
+        valid_path_dir = valid_path.split("\\")[:-1]
+        valid_path_dir = "/".join(valid_path_dir)
+        os.makedirs(valid_path_dir, exist_ok=True)
+
+        # remove file name from test_path
+        test_path_dir = test_path.split("\\")[:-1]
+        test_path_dir = "/".join(test_path_dir)
+        os.makedirs(test_path_dir, exist_ok=True)
 
         train.to_csv(train_path)
         valid.to_csv(valid_path)

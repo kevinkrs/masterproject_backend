@@ -152,7 +152,7 @@ torchaudio==0.12.1
 torchmetrics==0.9.3
 torchvision==0.13.1
 tqdm==4.64.0
-transformers==4.21.1
+transformers==4.21.3
 typing_extensions==4.3.0
 upgrade-ensurepip==0.2.1
 urllib3==1.26.11

@@ -25,12 +25,12 @@ class Dataloader:
         os.makedirs(os.path.join(base_dir, 'data', 'full'), exist_ok=True)
 
     def load_data_from_db(self, path: str):
-        username = self.config_secrets.USERNAME()
-        passwort = self.config_secrets.PASSWORD()
-        host = self.config_secrets.HOST()
-        host2 = self.config_secrets.HOST2()
-        ssh_username = self.config_secrets.SSH_USERNAME()
-        ssh_password = self.config_secrets.SSH_PASSWORD()
+        username = self.config_secrets.USERNAME
+        passwort = self.config_secrets.PASSWORD
+        host = self.config_secrets.HOST
+        host2 = self.config_secrets.HOST2
+        ssh_username = self.config_secrets.SSH_USERNAME
+        ssh_password = self.config_secrets.SSH_PASSWORD
 
         tunnel_info = [
             {
@@ -161,6 +161,7 @@ class Dataloader:
         train_path_dir = train_path.split("\\")[:-1]
         train_path_dir = "/".join(train_path_dir)
         os.makedirs(train_path_dir, exist_ok=True)
+        #
 
         # remove file name from valid_path
         valid_path_dir = valid_path.split("\\")[:-1]

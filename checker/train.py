@@ -17,41 +17,19 @@ LOGGER = logging.getLogger(__name__)
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 os.environ["TOKENIZER_PARALLELISM"] = "true"
 
-# def read_args() -> argparse.Namespace:
-#     parser = argparse.ArgumentParser()
-#     # Defining command line input "--config-file"
-#     parser.add_argument("--config-file", type=str)
-#     return parser.parse_args()
-
-
-# def set_random_seed(val: int = 1) -> None:
-#     random.seed(val)
-#     np.random.seed(val)
-#     # Torch-specific random-seeds
-#     torch.manual_seed(val)
-#     torch.cuda.manual_seed_all(val)
-
 
 if __name__ == "__main__":
-    # Triggered via "python checker/train.py --config-file config/distilbert.json -> Config is read and ran by the code"
-    # args = read_args()
-    # with open(args.config_file) as f:
-    #     config = json.load(f)
-    # set some environment variables
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
 
-    # set_random_seed(42)
     mlflow.set_experiment(config["model"])
 
     model_output_path = os.path.join(base_dir, config["model_output_path"])
-    # Update full model output path
+
     os.makedirs(config["model_output_path"] , exist_ok=True)
 
-    # Copy config to model directory
-    # copy(args.config_file, model_output_path)
     with mlflow.start_run() as run:
         with open(os.path.join(model_output_path, "meta.json"), "w") as f:
             json.dump({"mlflow_run_id": run.info.run_id}, f)

@@ -131,7 +131,7 @@ class TransformerModel():
         logits = []
         self.model.eval()
         # detaching of tensors from current computantional graph
-        self.model.cpu()
+        self.model.cuda()
         with torch.no_grad():
             for batch_idx, batch in enumerate(dataloader):
                 output = self.model(

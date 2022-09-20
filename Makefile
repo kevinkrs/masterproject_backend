@@ -7,6 +7,7 @@ python-env:
 	pre-commit install
 
 create-required-files:
+	cd checker/modules && \
 	touch config_secrets.py
 
 run-server:

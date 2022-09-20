@@ -18,7 +18,7 @@ def test_dataloader():
 
     # Only if required
     loader = Dataloader()
-    loader.load_data_from_db(RAW_PATH)
+    res = loader.load_data_from_db(RAW_PATH)
     loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
 

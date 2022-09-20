@@ -4,7 +4,7 @@ import json
 import os
 import nltk
 import pandas as pd
-import config_secrets
+from checker.modules import config_secrets
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re
@@ -62,7 +62,9 @@ class Dataloader:
 
             self.logger.info(f"Dataframe successfully written as csv to {path}")
 
-    def text_preprocessing(s: str):
+        return True
+
+    def text_preprocessing(self, s: str):
         """
         - Lowercase the sentence
         - Change "'t" to "not"
@@ -143,9 +145,6 @@ class Dataloader:
         df['title'] = df.title.apply(self.text_preprocessing)
         df['short_text'] = df.short_text.apply(self.text_preprocessing)
 
-
-        # Save cleaned full dataset
-        df.to_csv("data/full/df_cleaned.csv")
 
         return df
 

@@ -128,17 +128,18 @@ class TransformerModel():
         }
 
     def predict(self, dataloader):
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logits = []
         self.model.eval()
         # detaching of tensors from current computantional graph
-        self.model.cuda()
+        self.model.to(device)
         with torch.no_grad():
             for batch_idx, batch in enumerate(dataloader):
                 output = self.model(
-                    input_ids=batch["input_ids"].cuda(),
-                    attention_mask=batch["attention_mask"].cuda(),
+                    input_ids=batch["input_ids"].to(device),
+                    attention_mask=batch["attention_mask"].to(device),
                     # token_type_ids=batch['token_type_ids'].cuda(),
-                    labels=batch["labels"].cuda(),
+                    labels=batch["labels"].to(device),
                 )
                 logits.append(output[1])  # we only return the logits tensor
 

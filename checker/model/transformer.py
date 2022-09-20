@@ -128,7 +128,6 @@ class TransformerModel():
         }
 
     def predict(self, dataloader):
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logits = []
         self.model.eval()
         # detaching of tensors from current computantional graph

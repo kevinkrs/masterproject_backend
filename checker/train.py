@@ -36,6 +36,7 @@ if __name__ == "__main__":
         mlflow.set_tags({"evaluate": config["evaluate"]})
 
         RAW_PATH = os.path.join(base_dir, config["raw_data_path"])
+        FULL_PATH = os.path.join(base_dir, config["full_data_path"])
         TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
         VAL_PATH = os.path.join(base_dir, config["val_data_path"])
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])

@@ -1,5 +1,6 @@
 {
   "model": "bert",
+  "full_data_path" : "data/raw/full_news.csv",
   "raw_data_path": "data/raw/raw_news_data.csv",
   "train_data_path": "data/train/train_news.csv",
   "val_data_path": "data/val/valid_news.csv",

@@ -21,6 +21,10 @@ class Dataloader:
         self.logger = logger
         self.config_secrets = config_secrets
         os.makedirs(os.path.join(base_dir, 'data', 'raw' ), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'full' ), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'train'), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'valid'), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'test'), exist_ok=True)
 
     def load_data_from_db(self, path: str):
         username = self.config_secrets.USERNAME
@@ -148,8 +152,9 @@ class Dataloader:
 
         return df
 
-    def create_model_data(self, raw_path, train_path, valid_path, test_path):
+    def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
         df = self.preprocess_cleaning(raw_path)
+        df.to_csv(full_path)
 
         train_valid = df.sample(frac=0.9, random_state=12)
         train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%

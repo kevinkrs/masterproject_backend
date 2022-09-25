@@ -13,3 +13,18 @@ create-required-files:
 run-server:
 	cd checker/model && \
 	uvicorn main:app --reload
+
+
+run-hyperparam-tuning:
+	cd checker/model && \
+	python3 hyperparam_tuning.py
+
+
+start-training:
+	cd checker/model && \
+	python3 train.py
+
+start-training-with-hyperparam-tuning:
+	cd checker/model && \
+	python3 hyperparam_tuning.py && \
+	python3 train.py

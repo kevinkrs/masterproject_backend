@@ -17,11 +17,8 @@ class TransformerDataModule(pl.LightningDataModule):
         "labels",
     ]
 
-
     def __init__(self):
         super().__init__()
-
-
         # Read data
         #self.model_name_or_path = model_name_or_path
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

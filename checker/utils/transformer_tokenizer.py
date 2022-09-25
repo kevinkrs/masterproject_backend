@@ -12,7 +12,7 @@ def tokenizer_base(data):
 
     features = tokenizer(
         data["title"],
-        data["statementdate"],
+        data["short_text"],
         # return_tensors="pt",
         padding="max_length",
         add_special_tokens=True,

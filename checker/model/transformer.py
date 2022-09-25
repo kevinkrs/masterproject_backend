@@ -2,34 +2,35 @@ import pytorch_lightning as pl
 import torch
 import numpy as np
 import mlflow
-import os
 
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
 from typing import Optional, Dict
-# from checker.model.base import BaseModel,
-
+from .base import BaseModel
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
 
-
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 class LModule(pl.LightningModule):
     def __init__(self, model_name_or_path: str):
         super().__init__()
         self.config = AutoConfig.from_pretrained(
-            'bert-base-uncased',
+            "bert-base-uncased",
             num_labels=2,
             output_attentions=False,
             output_hidden_states=False,
         )
-        self.classifier = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, config=self.config)
+        self.classifier = AutoModelForSequenceClassification.from_pretrained(
+            model_name_or_path, config=self.config
+        )
         self.save_hyperparameters()
 
     def forward(self, **inputs):
@@ -71,27 +72,30 @@ class LModule(pl.LightningModule):
 
 
 # Model Definition: Add BaseModel once module import error fixed
-class TransformerModel():
+class TransformerModel(BaseModel):
     def __init__(self, config, load_from_ckpt=False):
         self.config = config
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
         if load_from_ckpt:
-            self.model = LModule.load_from_checkpoint(os.path.join(base_dir,
-                                                                   config["model_output_path"],
-                                                                   f"trained_model_{config['type']}-{config['version']}.ckpt"),
-                                                      )
+            self.model = LModule.load_from_checkpoint(
+                os.path.join(
+                    base_dir,
+                    config["model_output_path"],
+                    f"trained_model_{config['type']}-{config['version']}.ckpt",
+                ),
+            )
 
         else:
             self.model = LModule(config["type"])
             model_output_path = os.path.join(base_dir, config["model_output_path"])
             checkpoint_callback = ModelCheckpoint(
-                            monitor="val_loss",
-                            mode="min",
-                            dirpath=model_output_path,
-                            filename=f"trained_model_{config['type']}-{config['version']}",
-                            save_weights_only=True,
-                        )
+                monitor="val_loss",
+                mode="min",
+                dirpath=model_output_path,
+                filename=f"trained_model_{config['type']}-{config['version']}",
+                save_weights_only=True,
+            )
             self.trainer = Trainer(
                 max_epochs=config["num_epochs"],
                 logger=False,
@@ -99,7 +103,6 @@ class TransformerModel():
                 devices=1,
                 callbacks=[checkpoint_callback],
             )
-
 
     def train(self, datamodule):
         self.trainer.fit(self.model, datamodule)

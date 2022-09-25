@@ -4,7 +4,7 @@ import json
 import os
 import nltk
 import pandas as pd
-from checker.modules import config_secrets
+from config import config_secrets
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re
@@ -12,19 +12,21 @@ import re
 
 class Dataloader:
     def __init__(self):
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        with open(os.path.join(base_dir, "checker/config/config.json")) as f:
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
+        with open(os.path.join(base_dir, "config/config.json")) as f:
             config = json.load(f)
         logger = logging.getLogger()
         nltk.download("stopwords")
         self.config = config
         self.logger = logger
         self.config_secrets = config_secrets
-        os.makedirs(os.path.join(base_dir, 'data', 'raw' ), exist_ok=True)
-        os.makedirs(os.path.join(base_dir, 'data', 'full' ), exist_ok=True)
-        os.makedirs(os.path.join(base_dir, 'data', 'train'), exist_ok=True)
-        os.makedirs(os.path.join(base_dir, 'data', 'val'), exist_ok=True)
-        os.makedirs(os.path.join(base_dir, 'data', 'test'), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "raw"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "full"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "train"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "val"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "test"), exist_ok=True)
 
     def load_data_from_db(self, path: str):
         username = self.config_secrets.USERNAME
@@ -48,7 +50,7 @@ class Dataloader:
         ]
 
         with TunnelNetwork(
-                tunnel_info=tunnel_info, target_ip="127.0.0.1", target_port=27017
+            tunnel_info=tunnel_info, target_ip="127.0.0.1", target_port=27017
         ) as tn:
             self.logger.info(f"Tunnel available at localhost:{tn.local_bind_port}")
             client = pymongo.MongoClient(
@@ -87,11 +89,7 @@ class Dataloader:
 
         # Remove stopwords except 'not' and 'can'
         s = " ".join(
-            [
-                word
-                for word in s.split()
-                if word not in stopwords.words("english")
-            ]
+            [word for word in s.split() if word not in stopwords.words("english")]
         )
         # Remove trailing whitespace
         s = re.sub(r"\s+", " ", s).strip()
@@ -115,7 +113,6 @@ class Dataloader:
         s = summarizer(text, max_length=512, min_length=20)
 
         return s
-
 
     def preprocess_cleaning(self, raw_path):
         names = [
@@ -146,9 +143,8 @@ class Dataloader:
 
         # df['short_text'] = df.short_text.apply(preprocess_summarizer)
 
-        df['title'] = df.title.apply(self.text_preprocessing)
-        df['short_text'] = df.short_text.apply(self.text_preprocessing)
-
+        df["title"] = df.title.apply(self.text_preprocessing)
+        df["short_text"] = df.short_text.apply(self.text_preprocessing)
 
         return df
 

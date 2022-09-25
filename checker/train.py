@@ -4,10 +4,9 @@ import os
 import mlflow
 import torch
 
-from datetime import datetime
 from model.transformer import TransformerModel
-from utils.dataloader import Dataloader
-from modules.dataset_module import TransformerDataModule
+from model.utils.dataloader import Dataloader
+from model.utils.dataset_module import TransformerDataModule
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -21,14 +20,14 @@ os.environ["TOKENIZER_PARALLELISM"] = "true"
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
+    with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
     mlflow.set_experiment(config["model"])
 
     model_output_path = os.path.join(base_dir, config["model_output_path"])
 
-    os.makedirs(config["model_output_path"] , exist_ok=True)
+    os.makedirs(config["model_output_path"], exist_ok=True)
 
     with mlflow.start_run() as run:
         with open(os.path.join(model_output_path, "meta.json"), "w") as f:

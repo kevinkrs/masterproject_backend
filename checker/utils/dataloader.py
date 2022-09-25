@@ -23,7 +23,7 @@ class Dataloader:
         os.makedirs(os.path.join(base_dir, 'data', 'raw' ), exist_ok=True)
         os.makedirs(os.path.join(base_dir, 'data', 'full' ), exist_ok=True)
         os.makedirs(os.path.join(base_dir, 'data', 'train'), exist_ok=True)
-        os.makedirs(os.path.join(base_dir, 'data', 'valid'), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, 'data', 'val'), exist_ok=True)
         os.makedirs(os.path.join(base_dir, 'data', 'test'), exist_ok=True)
 
     def load_data_from_db(self, path: str):

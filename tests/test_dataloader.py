@@ -12,6 +12,7 @@ def test_dataloader():
         config = json.load(f)
 
     RAW_PATH = os.path.join(base_dir, config["raw_data_path"])
+    FULL_PATH = os.path.join(base_dir, config["full_data_path"])
     TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
     VAL_PATH = os.path.join(base_dir, config["val_data_path"])
     TEST_PATH = os.path.join(base_dir, config["test_data_path"])
@@ -19,7 +20,7 @@ def test_dataloader():
     # Only if required
     loader = Dataloader()
     res = loader.load_data_from_db(RAW_PATH)
-    loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
+    loader.create_model_data(RAW_PATH, FULL_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
 
     logger.info("Finish")

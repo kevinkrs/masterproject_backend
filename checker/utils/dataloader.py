@@ -158,18 +158,18 @@ class Dataloader:
         test = df.drop(train_valid.index)  # 10%
 
         # remove file name from train_path
-        train_path_dir = train_path.split("\\")[:-1]
+        train_path_dir = train_path.split("/")[:-1]
         train_path_dir = "/".join(train_path_dir)
         os.makedirs(train_path_dir, exist_ok=True)
         #
 
         # remove file name from valid_path
-        valid_path_dir = valid_path.split("\\")[:-1]
+        valid_path_dir = valid_path.split("/")[:-1]
         valid_path_dir = "/".join(valid_path_dir)
         os.makedirs(valid_path_dir, exist_ok=True)
 
         # remove file name from test_path
-        test_path_dir = test_path.split("\\")[:-1]
+        test_path_dir = test_path.split("/")[:-1]
         test_path_dir = "/".join(test_path_dir)
         os.makedirs(test_path_dir, exist_ok=True)
 

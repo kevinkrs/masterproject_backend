@@ -39,13 +39,6 @@ docker==5.0.3
 docopt==0.6.2
 dpath==2.0.6
 dulwich==0.20.45
-dvc==2.18.1
-dvc-data==0.1.17
-dvc-http==0.0.2
-dvc-objects==0.1.11
-dvc-render==0.0.9
-dvc-task==0.1.2
-dvclive==0.10.0
 entrypoints==0.4
 fastapi==0.85.0
 filelock==3.8.0

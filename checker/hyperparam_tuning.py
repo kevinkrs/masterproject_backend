@@ -27,7 +27,7 @@ def train_ray(config, data_dir=None, num_epochs=10, num_gpus=1):
 
 num_samples = 10
 num_epochs = 10
-gpus_per_trial = 2
+gpus_per_trial = 1
 
 data = os.path.join(base_dir, config["full_data_path"])
 # Download data

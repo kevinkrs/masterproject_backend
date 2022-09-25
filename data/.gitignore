@@ -2,3 +2,5 @@
 /train/train_news.csv
 /val/valid_news.csv
 dvc_test
+/raw/raw_news_data.csv
+/full/df_cleaned.csv

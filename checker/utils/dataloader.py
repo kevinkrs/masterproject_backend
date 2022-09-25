@@ -4,7 +4,7 @@ import json
 import os
 import nltk
 import pandas as pd
-import config_secrets
+from checker.modules import config_secrets
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re
@@ -64,6 +64,9 @@ class Dataloader:
 
             self.logger.info(f"Dataframe successfully written as csv to {path}")
 
+
+        return True
+
     def text_preprocessing(self, s: str):
         """
         - Lowercase the sentence
@@ -86,7 +89,7 @@ class Dataloader:
             [
                 word
                 for word in s.split()
-                if word not in stopwords.words("english") or word in ["not", "can"]
+                if word not in stopwords.words("english")
             ]
         )
         # Remove trailing whitespace

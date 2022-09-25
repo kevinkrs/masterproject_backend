@@ -73,11 +73,15 @@ def get_prediction(data):
 # SCHEMA: text - statementdate
 def inference(data: DataModel):
     # TODO: Could get quite slow, since model is intialized every request
-    label, probs, probs_max = get_prediction(data)
+    label, probs, prob_max = get_prediction(data)
     response = {
         'label': label,
         'probs': probs,
-        'summary': f'{label}: {probs_max}'
+        'prob_max': prob_max
     }
 
     return ORJSONResponse(response)
+
+@app.get("api/attentions")
+def attentions():
+    pass

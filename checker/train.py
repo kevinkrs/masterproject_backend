@@ -41,6 +41,7 @@ if __name__ == "__main__":
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
         if config["update_data"]:
+            LOGGER.info("Data preprocessing started")
             loader = Dataloader()
             loader.load_data_from_db(RAW_PATH)
             loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)

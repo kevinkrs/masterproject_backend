@@ -15,7 +15,7 @@
   "test_batch_size": 16,
   "max_seq_length": 64,
   "learning_rate": 3e-5,
-  "num_epochs": 15,
+  "num_epochs": 10,
   "update_data": false,
   "params": {},
   "env": {

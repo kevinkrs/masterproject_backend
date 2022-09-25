@@ -4,7 +4,7 @@ import json
 import os
 import nltk
 import pandas as pd
-from checker.modules import config_secrets
+# from checker.modules import config_secrets
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 import re

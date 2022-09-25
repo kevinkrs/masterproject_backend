@@ -4,7 +4,7 @@
   "train_data_path": "data/train/train_news.csv",
   "val_data_path": "data/val/valid_news.csv",
   "test_data_path": "data/test/test_news.csv",
-  "model_output_path": "saved_models/bert-based",
+  "model_output_path": "checker/saved_models/bert-based",
   "type": "bert-base-uncased",
   "version": "v1-4-0",
   "targets": "short_text and statementdate",

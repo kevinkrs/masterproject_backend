@@ -3,3 +3,5 @@
 /val/valid_news.csv
 /raw/raw_news_data.csv
 dvc_test
+/raw/raw_news_data.csv
+/full/df_cleaned.csv

@@ -7,8 +7,8 @@ import json
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from utils.datamodule import DataModel
-from transformer import LModule
+from model.utils.datamodule import DataModel
+from model.transformer import LModule
 from transformers import BertTokenizerFast
 
 
@@ -28,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 

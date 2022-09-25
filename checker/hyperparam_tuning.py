@@ -1,15 +1,13 @@
 from ray import tune
 import os
 import json
-from checker.model.transformer import TransformerModel
-from dataset_module import TransformerDataModule
+from model.transformer import TransformerModel
+from model.utils.dataset_module import TransformerDataModule
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from pytorch_lightning import Trainer
 
 
-base_dir = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 

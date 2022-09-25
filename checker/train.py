@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     model_output_path = os.path.join(base_dir, config["model_output_path"])
 
-    os.makedirs(config["model_output_path"], exist_ok=True)
+    os.makedirs(os.path.join(base_dir, config["model_output_path"]), exist_ok=True)
 
     with mlflow.start_run() as run:
         with open(os.path.join(model_output_path, "meta.json"), "w") as f:

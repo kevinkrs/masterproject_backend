@@ -1,7 +1,7 @@
 setup: python-env create-required-files
 
 python-env:
-	python3 venv venv && \
+	virtualenv -p python3 venv && \
 	source venv/bin/activate && \
 	pip install --upgrade -r requirements.txt && \
 	pre-commit install
@@ -14,11 +14,9 @@ run-server:
 	cd checker && \
 	uvicorn main:app --reload
 
-
 run-hyperparam-tuning:
 	cd checker && \
 	python3 hyperparam_main.py
-
 
 start-training:
 	cd checker && \

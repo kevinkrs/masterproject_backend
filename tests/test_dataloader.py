@@ -8,7 +8,7 @@ def test_dataloader():
     logger = logging.getLogger("Test")
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
+    with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
     RAW_PATH = os.path.join(base_dir, config["raw_data_path"])
@@ -21,6 +21,5 @@ def test_dataloader():
     loader = Dataloader()
     res = loader.load_data_from_db(RAW_PATH)
     loader.create_model_data(RAW_PATH, FULL_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
-
 
     logger.info("Finish")

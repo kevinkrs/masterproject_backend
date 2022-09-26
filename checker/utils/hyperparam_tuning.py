@@ -21,8 +21,8 @@ class HyperParamTuning:
             trainer = pl.Trainer(
                 max_epochs=num_epochs,
                 callbacks=callbacks,
-                devices=num_gpus, accelerator="auto",
-                strategy=RayStrategy(num_workers=4, use_gpu=False))
+                #devices=num_gpus, accelerator="auto",
+                strategy=RayStrategy(num_workers=4, use_gpu=True))
           
             model = TransformerModel(self.config).model
             trainer.fit(model, self.dm)

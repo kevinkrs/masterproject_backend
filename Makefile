@@ -15,12 +15,10 @@ run-server:
 	uvicorn main:app --reload
 
 run-hyperparam-tuning:
-	cd checker && \
-	python3 hyperparam_main.py
+	python3 checker/hyperparam_main.py
 
 start-training:
-	cd checker && \
-	python3 train.py
+	python3 checker/train.py
 
 start-training-with-hyperparam-tuning:
 	cd checker && \

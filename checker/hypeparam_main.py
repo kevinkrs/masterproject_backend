@@ -10,10 +10,10 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 
 
-model = TransformerModel(config)
+model = TransformerModel(config).model
 datamodule = TransformerDataModule()
 
 tuner = HyperParamTuning(config, model, datamodule)
 analysis = tuner.run()
 
-print(analysis.best_config)
+print(analysis)

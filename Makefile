@@ -1,7 +1,7 @@
 setup: python-env create-required-files
 
 python-env:
-	virtualenv -p python3 venv && \
+	python3 venv venv && \
 	source venv/bin/activate && \
 	pip install --upgrade -r requirements.txt && \
 	pre-commit install

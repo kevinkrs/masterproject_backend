@@ -26,7 +26,7 @@ class HyperParamTuning:
     def run(self):
         num_samples = 10
         num_epochs = 10
-        gpus_per_trial = 1
+        gpus_per_trial = 2
 
         data = os.path.join(self.base_dir, self.config["full_data_path"])
         # Download data

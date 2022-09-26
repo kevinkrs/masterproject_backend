@@ -3,20 +3,24 @@ import torch
 import numpy as np
 import mlflow
 
+from typing import Optional, Dict
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
-from typing import Optional, Dict
+
 from .base import BaseModel
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
+from ray.tune.integration.pytorch_lightning import TuneReportCallback
 
-import sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# import sys, os
+#
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 class LModule(pl.LightningModule):
@@ -89,6 +93,7 @@ class TransformerModel(BaseModel):
         else:
             self.model = LModule(config["type"])
             model_output_path = os.path.join(base_dir, config["model_output_path"])
+            metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
             checkpoint_callback = ModelCheckpoint(
                 monitor="val_loss",
                 mode="min",
@@ -101,7 +106,10 @@ class TransformerModel(BaseModel):
                 logger=False,
                 accelerator="auto",
                 devices=1,
-                callbacks=[checkpoint_callback],
+                callbacks=[
+                    checkpoint_callback,
+                    TuneReportCallback(metrics, on="validation_end"),
+                ],
             )
 
     def train(self, datamodule):

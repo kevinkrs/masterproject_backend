@@ -147,13 +147,13 @@ class Dataloader:
 
     def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
         df = self.preprocess_cleaning(raw_path)
-        df.to_csv(full_path)
 
         train_valid = df.sample(frac=0.9, random_state=12)
         train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
         valid = train_valid.drop(train.index)  # 10%
         test = df.drop(train_valid.index)  # 10%
 
+        df.to_csv(full_path)
         train.to_csv(train_path)
         valid.to_csv(valid_path)
         test.to_csv(test_path)

@@ -1,6 +1,6 @@
 import os
 import json
-
+from model.transformer import TransformerModel
 from ray import air, tune
 from ray.tune import CLIReporter
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
@@ -8,10 +8,9 @@ from pytorch_lightning import Trainer
 
 
 class HyperParamTuning:
-    def __init__(self, config, model, datamodule):
+    def __init__(self, config, datamodule):
         self.config = config
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.model = model
         self.dm = datamodule
 
     def run(self):
@@ -23,6 +22,7 @@ class HyperParamTuning:
                 #progress_bar_refresh_rate=0,
                 callbacks=[TuneReportCallback(metrics, on="validation_end")],
             )
+            model = TransformerModel(config).model
             trainer.fit(self.model, self.dm)
 
         num_samples = 10

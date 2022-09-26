@@ -22,7 +22,7 @@ class HyperParamTuning:
                 max_epochs=num_epochs,
                 callbacks=callbacks,
                 #devices=num_gpus, accelerator="auto",
-                strategy=RayStrategy(num_workers=4, use_gpu=True))
+                strategy=RayStrategy(num_workers=1, use_gpu=True))
           
             model = TransformerModel(self.config).model
             trainer.fit(model, self.dm)
@@ -84,8 +84,8 @@ class HyperParamTuning:
         metric="loss",
         mode="min",
         config=config,
-        num_samples=2,
-        resources_per_trial=get_tune_resources(num_workers=4),
+        num_samples=num_samples,
+        resources_per_trial=get_tune_resources(num_workers=3),
 
         name="tune_bert")
         

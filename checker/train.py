@@ -45,7 +45,7 @@ if __name__ == "__main__":
             LOGGER.info("Data preprocessing started")
             loader = Dataloader(config, secrets=config_secrets)
             loader.load_data_from_db(RAW_PATH)
-            loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
+            loader.create_model_data(RAW_PATH, FULL_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 
         # Datamodule handles loading the data and tokenizing it
         datamodule = TransformerDataModule()

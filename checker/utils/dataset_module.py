@@ -23,7 +23,7 @@ class TransformerDataModule(pl.LightningDataModule):
         # Read data
         # self.model_name_or_path = model_name_or_path
         base_dir = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
         with open(os.path.join(base_dir, "config/config.json")) as f:
             self.config = json.load(f)

@@ -5,8 +5,9 @@ import mlflow
 import torch
 
 from model.transformer import TransformerModel
-from model.utils.dataloader import Dataloader
-from model.utils.dataset_module import TransformerDataModule
+from utils.dataloader import Dataloader
+from utils.dataset_module import TransformerDataModule
+from config import config_secrets
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -42,7 +43,7 @@ if __name__ == "__main__":
 
         if config["update_data"]:
             LOGGER.info("Data preprocessing started")
-            loader = Dataloader()
+            loader = Dataloader(config, secrets=config_secrets)
             loader.load_data_from_db(RAW_PATH)
             loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
 

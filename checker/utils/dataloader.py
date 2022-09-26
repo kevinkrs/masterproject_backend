@@ -1,27 +1,24 @@
 import logging
 import pymongo
-import json
 import os
 import nltk
 import pandas as pd
-from config import config_secrets
+import re
+
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
-import re
 
 
 class Dataloader:
-    def __init__(self):
+    def __init__(self, config, secrets):
         base_dir = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
-        with open(os.path.join(base_dir, "config/config.json")) as f:
-            config = json.load(f)
         logger = logging.getLogger()
         nltk.download("stopwords")
         self.config = config
         self.logger = logger
-        self.config_secrets = config_secrets
+        self.config_secrets = secrets
         os.makedirs(os.path.join(base_dir, "data", "raw"), exist_ok=True)
         os.makedirs(os.path.join(base_dir, "data", "full"), exist_ok=True)
         os.makedirs(os.path.join(base_dir, "data", "train"), exist_ok=True)

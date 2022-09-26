@@ -2,4 +2,5 @@
 /train/train_news.csv
 /val/valid_news.csv
 /raw/raw_news_data.csv
+/full/full_news.csv
 dvc_test

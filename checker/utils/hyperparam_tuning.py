@@ -18,12 +18,12 @@ class HyperParamTuning:
             metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
             trainer = Trainer(
                 max_epochs=num_epochs,
-                gpus=num_gpus,
+                #gpus=num_gpus,
                 #progress_bar_refresh_rate=0,
                 callbacks=[TuneReportCallback(metrics, on="validation_end")],
             )
-            model = TransformerModel(config).model
-            trainer.fit(self.model, self.dm)
+            model = TransformerModel(self.config).model
+            trainer.fit(model, self.dm)
 
         num_samples = 10
         num_epochs = 10

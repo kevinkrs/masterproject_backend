@@ -10,6 +10,7 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 
 
+
 datamodule = TransformerDataModule()
 
 tuner = HyperParamTuning(config, datamodule)

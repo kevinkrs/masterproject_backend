@@ -17,9 +17,9 @@ LOGGER = logging.getLogger(__name__)
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 os.environ["TOKENIZER_PARALLELISM"] = "true"
 
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if __name__ == "__main__":
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)

@@ -11,7 +11,7 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 
 model = TransformerModel(config)
-datamodule = TransformerDataModule()
+datamodule = TransformerDataModule(config)
 
 tuner = HyperParamTuning(config, model, datamodule)
 analysis = tuner.run()

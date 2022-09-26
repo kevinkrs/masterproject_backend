@@ -18,7 +18,7 @@ class TransformerDataModule(pl.LightningDataModule):
         "labels",
     ]
 
-    def __init__(self):
+    def __init__(self, config):
         super().__init__()
         # Read data
         # self.model_name_or_path = model_name_or_path
@@ -26,13 +26,13 @@ class TransformerDataModule(pl.LightningDataModule):
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
         with open(os.path.join(base_dir, "config/config.json")) as f:
-            self.config = json.load(f)
+            self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.config["type"], padding_side="right"
+            config["type"], padding_side="right"
         )
-        TRAIN_PATH = os.path.join(base_dir, self.config["train_data_path"])
-        VAL_PATH = os.path.join(base_dir, self.config["val_data_path"])
-        TEST_PATH = os.path.join(base_dir, self.config["test_data_path"])
+        TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
+        VAL_PATH = os.path.join(base_dir, config["val_data_path"])
+        TEST_PATH = os.path.join(base_dir, config["test_data_path"])
         self.data_paths = {"train": TRAIN_PATH, "val": VAL_PATH, "test": TEST_PATH}
 
     def setup(self, stage: str):

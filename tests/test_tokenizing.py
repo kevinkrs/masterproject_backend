@@ -1,4 +1,4 @@
-from checker.model.utils.transformer_tokenizer import tokenizer_base
+from checker.utils.transformer_tokenizer import tokenizer_base
 import os
 import pandas as pd
 import json

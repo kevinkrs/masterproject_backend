@@ -2,7 +2,7 @@ from checker.utils.transformer_tokenizer import tokenizer_base
 import os
 import json
 from datasets import load_dataset
-from checker.modules.dataset_module import TransformerDataModule
+from checker.utils.dataset_module import TransformerDataModule
 
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

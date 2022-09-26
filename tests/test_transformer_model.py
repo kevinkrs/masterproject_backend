@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from datasets import load_dataset
-from checker.model.utils.dataset_module import TransformerDataModule
+from checker.utils.dataset_module import TransformerDataModule
 from datetime import datetime
 from checker.model.transformer import TransformerModel
 

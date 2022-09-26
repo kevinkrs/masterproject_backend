@@ -85,7 +85,7 @@ class HyperParamTuning:
         mode="min",
         config=config,
         num_samples=num_samples,
-        resources_per_trial=get_tune_resources(num_workers=3),
+        resources_per_trial=get_tune_resources(num_workers=3, use_gpu=True),
 
         name="tune_bert")
         

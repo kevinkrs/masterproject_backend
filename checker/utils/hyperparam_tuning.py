@@ -14,7 +14,7 @@ class HyperParamTuning:
         self.dm = datamodule
 
     def run(self):
-        def train_ray(self, data_dir=None, num_epochs=10, num_gpus=1):
+        def train_ray(data_dir=None, num_epochs=10, num_gpus=1):
             metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
             trainer = Trainer(
                 max_epochs=num_epochs,

@@ -14,9 +14,7 @@ class HyperParamTuning:
         self.dm = datamodule
 
     def run(self):
-        def train_ray(
-            model, dm, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
-        ):
+        def train_ray(data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None):
             metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
             callbacks = [TuneReportCallback(metrics, on="validation_end")]
             trainer = Trainer(

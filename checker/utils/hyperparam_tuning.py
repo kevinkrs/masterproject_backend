@@ -14,11 +14,25 @@ class HyperParamTuning:
         self.dm = datamodule
 
     def run(self):
+        def train_ray(
+            model, dm, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
+        ):
+            metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
+            callbacks = [TuneReportCallback(metrics, on="validation_end")]
+            trainer = Trainer(
+                max_epochs=num_epochs,
+                callbacks=callbacks,
+                devices=num_gpus,
+                accelerator="auto",
+                # strategy=RayStrategy(num_workers=4, use_gpu=True)
+            )
+            trainer.fit(model, dm)
+
         num_samples = 10
         num_epochs = 10
         gpus_per_trial = 1
 
-        data = os.path.join(self.base_dir, self.config["full_data_path"])
+        data_dir = os.path.join(self.base_dir, self.config["full_data_path"])
 
         config = {
             "layer_1": tune.choice([32, 64, 128]),
@@ -28,10 +42,13 @@ class HyperParamTuning:
         }
 
         trainable = tune.with_parameters(
-            self.model.train,
-            data_dir=data,
+            train_ray,
+            model=self.model,
+            dm=self.dm,
+            data_dir=data_dir,
             num_epochs=num_epochs,
             num_gpus=gpus_per_trial,
+            checkpoint_dir=None,
         )
 
         analysis = tune.run(

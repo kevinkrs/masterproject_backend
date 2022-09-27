@@ -98,7 +98,6 @@ class TransformerModel(BaseModel):
         else:
             self.model = LModule(config["type"])
             model_output_path = os.path.join(base_dir, config["model_output_path"])
-            metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
             checkpoint_callback = ModelCheckpoint(
                 monitor="val_loss",
                 mode="min",
@@ -113,7 +112,6 @@ class TransformerModel(BaseModel):
                 devices=1,
                 callbacks=[
                     checkpoint_callback,
-                    TuneReportCallback(metrics, on="validation_end"),
                 ],
             )
 

@@ -20,6 +20,7 @@ from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray_lightning.tune import TuneReportCallback
 from ray_lightning import RayStrategy
 from ray import tune
+from ray_lightning.tune import get_tune_resources
 
 
 # import sys, os
@@ -162,23 +163,19 @@ class TransformerModel(BaseModel):
         return {}
 
 
-def train_ray(
-    datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
-):
-    model = LModule("bert-base-uncased")
-    metrics = {"loss": "avg_val_loss"}
-    callbacks = [TuneReportCallback(metrics, on="validation_end")]
-    trainer = Trainer(
-        max_epochs=num_epochs,
-        callbacks=callbacks,
-        # devices=num_gpus,
-        # accelerator="auto",
-        strategy=RayStrategy(num_workers=4, use_gpu=True),
-    )
-    trainer.fit(model, datamodule)
-
-
 def tune_bert(data_dir, datamodule):
+    def train_ray(data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None):
+        model = LModule("bert-base-uncased")
+        metrics = {"loss": "avg_val_loss"}
+        callbacks = [TuneReportCallback(metrics, on="validation_end")]
+        trainer = Trainer(
+            max_epochs=num_epochs,
+            callbacks=callbacks,
+            # devices=num_gpus,
+            # accelerator="auto",
+            strategy=RayStrategy(num_workers=4, use_gpu=True),
+        )
+        trainer.fit(model, datamodule)
 
     num_samples = 10
     num_epochs = 10
@@ -193,7 +190,6 @@ def tune_bert(data_dir, datamodule):
 
     trainable = tune.with_parameters(
         train_ray,
-        datamodule=datamodule,
         data_dir=data_dir,
         num_epochs=num_epochs,
         num_gpus=gpus_per_trial,
@@ -202,12 +198,14 @@ def tune_bert(data_dir, datamodule):
 
     analysis = tune.run(
         trainable,
-        resources_per_trial={"cpu": 1, "gpu": gpus_per_trial},
+        resources_per_trial=get_tune_resources(
+            num_workers=1, num_cpus_per_worker=3, use_gpu=True
+        ),
         metric="loss",
         mode="min",
         config=config,
         num_samples=num_samples,
-        name="tune_mnist",
+        name="tune_bert",
     )
 
     return analysis

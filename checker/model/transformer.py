@@ -17,6 +17,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
+from ray import tune
 
 
 # import sys, os
@@ -162,3 +163,54 @@ class TransformerModel(BaseModel):
     # Only required for mlflow to work
     def get_params(self) -> Dict:
         return {}
+
+
+def train_ray(
+    config, datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
+):
+    model = LModule(config["type"])
+    dm = datamodule
+    metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
+    callbacks = [TuneReportCallback(metrics, on="validation_end")]
+    trainer = Trainer(
+        max_epochs=num_epochs,
+        callbacks=callbacks,
+        devices=num_gpus,
+        accelerator="auto",
+        # strategy=RayStrategy(num_workers=4, use_gpu=True)
+    )
+    trainer.fit(model, dm)
+
+
+def tune_bert(data_dir):
+
+    num_samples = 10
+    num_epochs = 10
+    gpus_per_trial = 1
+
+    config = {
+        "layer_1": tune.choice([32, 64, 128]),
+        "layer_2": tune.choice([64, 128, 256]),
+        "lr": tune.loguniform(1e-5, 1e-5),
+        "batch_size": tune.choice([32, 64, 128]),
+    }
+
+    trainable = tune.with_parameters(
+        train_ray,
+        data_dir=data_dir,
+        num_epochs=num_epochs,
+        num_gpus=gpus_per_trial,
+        checkpoint_dir=None,
+    )
+
+    analysis = tune.run(
+        trainable,
+        resources_per_trial={"cpu": 1, "gpu": gpus_per_trial},
+        metric="loss",
+        mode="min",
+        config=config,
+        num_samples=num_samples,
+        name="tune_mnist",
+    )
+
+    return analysis

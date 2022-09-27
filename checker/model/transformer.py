@@ -60,10 +60,14 @@ class LModule(pl.LightningModule):
         self.log("avg_val_loss", avg_val_loss)
         mlflow.log_metric("avg_val_loss", avg_val_loss, self.current_epoch)
         print(f"Avg val loss: {avg_val_loss}")
+        # ray tune specific
+        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
+        avg_acc = torch.stack([x["val_accuracy"] for x in outputs]).mean()
+        self.log("ptl/val_loss", avg_loss)
+        self.log("ptl/val_accuracy", avg_acc)
 
     def test_step(self, batch, batch_idx):
         outputs = self(**batch)
-
         self.log("test_loss", outputs[0])
         return outputs[0]
 

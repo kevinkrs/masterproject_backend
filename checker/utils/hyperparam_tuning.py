@@ -29,11 +29,8 @@ class HyperParamTuning:
             trainer.fit(model, self.dm)
 
         num_samples = 10
-        num_epochs = 10
-        gpus_per_trial = 1
 
         data = os.path.join(self.base_dir, self.config["full_data_path"])
-        # Download data
 
         config = {
             "layer_1": tune.choice([32, 64, 128]),

@@ -37,7 +37,7 @@ class Inference:
         # 1. Get prediction as list
         logits = []
         with torch.no_grad():
-            output = model(**tokenized_data)
+            output = self.model(**tokenized_data)
             logits.append(output.logits)
         # # 2. Transform list to torch tensor
         preds_tp = torch.cat(logits, dim=0)
@@ -45,7 +45,7 @@ class Inference:
         probs = torch.nn.functional.softmax(preds_tp, dim=-1).squeeze()
         preds = probs.argmax()
         predicted_class_id = preds.max().item()
-        pred_label = model.config.id2label[predicted_class_id]
+        pred_label = self.model.config.id2label[predicted_class_id]
         if pred_label == "LABEL_0":
             label = "FAKE"
         else:

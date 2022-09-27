@@ -54,13 +54,14 @@ class LModule(pl.LightningModule):
         outputs = self(**batch)
         self.log("val_loss", outputs[0])
 
-        return outputs[0]
+        return outputs
 
     def validation_epoch_end(self, outputs) -> None:
-        avg_val_loss = float(sum(outputs) / len(outputs))
+        avg_val_loss = float(sum(outputs[0]) / len(outputs[0]))
         self.log("avg_val_loss", avg_val_loss)
         mlflow.log_metric("avg_val_loss", avg_val_loss, self.current_epoch)
         print(f"Avg val loss: {avg_val_loss}")
+
         # ray tune specific
         avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
         avg_acc = torch.stack([x["val_accuracy"] for x in outputs]).mean()
@@ -166,9 +167,9 @@ class TransformerModel(BaseModel):
 
 
 def train_ray(
-    config, datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
+    datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
 ):
-    model = LModule(config["type"])
+    model = LModule("bert-base-uncased")
     metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
     callbacks = [TuneReportCallback(metrics, on="validation_end")]
     trainer = Trainer(

@@ -11,7 +11,7 @@ from pytorch_lightning.trainer import Trainer
 from torch.utils.data import DataLoader
 from datasets import load_dataset
 from transformers import BertTokenizerFast
-from checker.utils.datamodel import DataModel
+from checker.utils.datamodels import DataModel
 
 
 def test_inference_mode():

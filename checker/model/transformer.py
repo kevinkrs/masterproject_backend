@@ -166,7 +166,7 @@ def train_ray(
     datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
 ):
     model = LModule("bert-base-uncased")
-    metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
+    metrics = {"loss": "avg_val_loss", "acc": "ptl/val_accuracy"}
     callbacks = [TuneReportCallback(metrics, on="validation_end")]
     trainer = Trainer(
         max_epochs=num_epochs,

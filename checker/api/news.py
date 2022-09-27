@@ -1,7 +1,10 @@
 import pymongo
 import pandas as pd
+import os, json
 
 from pytunneling import TunnelNetwork
+
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def get_news(self, config_secrets):
@@ -37,5 +40,18 @@ def get_news(self, config_secrets):
         facts_db = client["facts"]
         politifact = facts_db.politifact
         df = pd.DataFrame(list(politifact.find()))
+        df["statementdate"] = pd.to_datetime(df["statementdate"])
+        df = df.sort_values(by="statementdate")
 
-    return df
+    return df.to_json(default_handler=str)
+
+
+def get_news_from_csv(config):
+
+    RAW_PATH = config["raw_data_path"]
+
+    df = pd.read_csv(os.path.join(base_dir, RAW_PATH), header=0, sep=",")
+    df["statementdate"] = pd.to_datetime(df["statementdate"])
+    df = df.sort_values(by="statementdate")
+
+    return df[:31]

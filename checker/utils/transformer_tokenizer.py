@@ -2,7 +2,7 @@ import json
 import os
 from transformers import AutoTokenizer
 
-base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 

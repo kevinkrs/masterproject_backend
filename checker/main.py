@@ -12,7 +12,7 @@ from model.transformer import LModule
 
 from config import config_secrets
 
-from api.news import get_news
+from api.news import get_news, get_news_from_csv
 from api.inference import Inference
 
 
@@ -52,7 +52,6 @@ def inference(data: DataModel):
 
 @app.get("/api/news")
 def attentions():
-    news = get_news(config_secrets)
-    response = news.to_json()
+    response = get_news_from_csv(config)
 
     return response

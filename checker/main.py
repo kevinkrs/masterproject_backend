@@ -12,7 +12,7 @@ from model.transformer import LModule
 from transformers import BertTokenizerFast
 
 from api.inference import Inference
-
+from api.search import SemanticSearch
 
 logger = logging.getLogger("inference")
 app = FastAPI()
@@ -20,7 +20,6 @@ app = FastAPI()
 origins = [
     "http://localhost:8080",
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,6 +35,7 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 model = LModule("bert-base-uncased")
 inference = Inference(config=config, model=model)
+search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)
@@ -51,6 +51,9 @@ def inference(data: DataModel):
 @app.get("api/attentions")
 def attentions():
     pass
+
+
 @app.post("api/search", response_class=ORJSONResponse)
 def search(data: DataModel):
-    pass
+    response = search.get_similar(data)
+    return ORJSONResponse(response)

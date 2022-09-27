@@ -44,7 +44,7 @@ class LModule(pl.LightningModule):
         # outputs includes: loss[0], logits[1], hidden states[2] and attentions [3]
         return outputs[0]
 
-    def validation_step(self, val_batch, batch_idx):
+    def validation_step(self, batch, batch_idx):
         outputs = self(**batch)
         self.log("val_loss", outputs[0])
         return outputs[0]

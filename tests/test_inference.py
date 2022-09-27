@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 from datasets import load_dataset
 from transformers import BertTokenizerFast
 from checker.utils.datamodels import DataModel
+from checker.api.inference import Inference
 
 
 def test_inference_mode():
@@ -82,3 +83,23 @@ def test_inference_api():
     )
     response = json.loads(prediction.content)
     print(response)
+
+
+def test_outputs():
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    model = LModule("bert-base-uncased")
+
+    with open(os.path.join(base_dir, "config/config.json")) as f:
+        config = json.load(f)
+    inference = Inference(config=config, model=model)
+
+    raw = {
+        "text": "Texas public high school graduation rate is at 90% overall.",
+        "statementdate": "2022-07-29",
+    }
+
+    data = DataModel(**raw)
+
+    output = inference.get_output(data)
+
+    print("finished")

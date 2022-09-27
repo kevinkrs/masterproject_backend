@@ -52,3 +52,19 @@ class Inference:
             label = "TRUE"
 
         return label, probs.numpy().tolist(), probs.numpy().max().tolist()
+
+    def get_output(self, data):
+        tokenized_data = self.tokenizer(
+            data.text,
+            data.statementdate,
+            return_attention_mask=True,
+            return_tensors="pt",
+            padding="max_length",
+        )
+
+        # Load model from checkpoint
+        self.model.eval()
+        with torch.no_grad():
+            output = self.model(**tokenized_data)
+
+        return output

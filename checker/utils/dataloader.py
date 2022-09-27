@@ -9,6 +9,8 @@ from nltk.corpus import stopwords
 
 
 class Dataloader:
+    """Dataloader class witch contains all important"""
+
     def __init__(self, config, secrets):
         base_dir = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,7 +91,7 @@ class Dataloader:
                 for word in s.split()
                 if word not in stopwords.words("english")
                 # TODO: Check out if not and can change model badly or to something better
-                # or word in ["not", "can"]
+                or word in ["not", "can"]
             ]
         )
         # Remove trailing whitespace

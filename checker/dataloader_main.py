@@ -2,8 +2,8 @@ import json
 import os
 import logging
 
-from utils.dataloader import Dataloader
-from config import config_secrets
+from checker.utils.dataloader import Dataloader
+from .config import config_secrets
 
 
 logger = logging.getLogger("Test")

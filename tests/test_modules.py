@@ -2,7 +2,7 @@ import os
 import json
 import logging
 
-from config import config_secrets
+from checker.config import config_secrets
 
 from checker.model.transformer import TransformerModel
 from checker.utils.dataloader import Dataloader
@@ -24,7 +24,7 @@ def test_all_modules():
     LOGGER.info("Dataloader initialized successfully")
     dm = TransformerDataModule(config)
     LOGGER.info("TransformerDataModule initialized successfully")
-    tuner = HyperParamTuning(config, model, dm)
+    tuner = HyperParamTuning(config)
     LOGGER.info("HyperParamTuning initialized successfully")
 
     print("finish")

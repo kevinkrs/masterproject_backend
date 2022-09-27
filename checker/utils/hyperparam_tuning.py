@@ -1,7 +1,7 @@
 import os
 import json
-from model.transformer import TransformerModel
-from utils.dataset_module import TransformerDataModule
+from checker.model.transformer import TransformerModel
+from checker.utils.dataset_module import TransformerDataModule
 from ray import air, tune
 from ray.tune import CLIReporter
 from ray_lightning.tune import TuneReportCallback, get_tune_resources

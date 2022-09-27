@@ -16,17 +16,6 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
-from ray.tune.integration.pytorch_lightning import TuneReportCallback
-from ray_lightning.tune import TuneReportCallback
-from ray_lightning import RayStrategy
-from ray import tune
-from ray_lightning.tune import get_tune_resources
-
-
-# import sys, os
-#
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 
 class LModule(pl.LightningModule):
     def __init__(self, model_name_or_path: str):

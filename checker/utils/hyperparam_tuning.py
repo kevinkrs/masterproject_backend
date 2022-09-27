@@ -1,6 +1,7 @@
 import os
 import json
 from model.transformer import TransformerModel
+from utils.dataset_module import TransformerDataModule
 from ray import air, tune
 from ray.tune import CLIReporter
 from ray_lightning.tune import TuneReportCallback, get_tune_resources
@@ -9,14 +10,15 @@ from ray_lightning import RayStrategy
 
 
 class HyperParamTuning:
-    def __init__(self, config, datamodule):
+    def __init__(self, config):
         self.config = config
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.dm = datamodule
+        # self.dm = datamodule
 
     def run(self):
         def train_ray(data_dir=None, num_epochs=10, num_gpus=1):
             metrics = {"loss": "avg_val_loss"}
+
             callbacks = [TuneReportCallback(metrics, on="validation_end")]
             trainer = pl.Trainer(
                 max_epochs=num_epochs,
@@ -24,9 +26,10 @@ class HyperParamTuning:
                 # devices=num_gpus, accelerator="auto",
                 strategy=RayStrategy(num_workers=1, use_gpu=True),
             )
-
             model = TransformerModel(self.config).model
-            trainer.fit(model, self.dm)
+            dm = TransformerDataMdoule(self.config)
+
+            trainer.fit(model, dm)
 
         num_samples = 10
 

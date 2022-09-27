@@ -51,3 +51,6 @@ def inference(data: DataModel):
 @app.get("api/attentions")
 def attentions():
     pass
+@app.post("api/search", response_class=ORJSONResponse)
+def search(data: DataModel):
+    pass

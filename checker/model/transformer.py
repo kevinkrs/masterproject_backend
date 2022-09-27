@@ -31,7 +31,7 @@ class LModule(pl.LightningModule):
     def __init__(self, model_name_or_path: str):
         super().__init__()
         self.config = AutoConfig.from_pretrained(
-            "bert-base-uncased",
+            model_name_or_path,
             num_labels=2,
             output_attentions=False,
             output_hidden_states=False,
@@ -166,7 +166,7 @@ def train_ray(
     datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
 ):
     model = LModule("bert-base-uncased")
-    metrics = {"loss": "avg_val_loss", "acc": "ptl/val_accuracy"}
+    metrics = {"loss": "avg_val_loss"}
     callbacks = [TuneReportCallback(metrics, on="validation_end")]
     trainer = Trainer(
         max_epochs=num_epochs,

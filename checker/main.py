@@ -50,7 +50,7 @@ def inference(data: DataModel):
     return ORJSONResponse(response)
 
 
-@app.get("api/news")
+@app.get("/api/news")
 def attentions():
     news = get_news(config_secrets)
     response = news.to_json()

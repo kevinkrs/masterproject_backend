@@ -17,6 +17,8 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
+from ray_lightning.tune import TuneReportCallback
+from ray_lightning import RayStrategy
 from ray import tune
 
 
@@ -175,9 +177,9 @@ def train_ray(
     trainer = Trainer(
         max_epochs=num_epochs,
         callbacks=callbacks,
-        devices=num_gpus,
-        accelerator="auto",
-        # strategy=RayStrategy(num_workers=4, use_gpu=True)
+        # devices=num_gpus,
+        # accelerator="auto",
+        strategy=RayStrategy(num_workers=4, use_gpu=True),
     )
     trainer.fit(model, datamodule)
 

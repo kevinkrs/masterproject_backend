@@ -9,8 +9,10 @@ from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from utils.datamodels import DataModel
 from model.transformer import LModule
-from transformers import BertTokenizerFast
 
+from config import config_secrets
+
+from api.news import get_news
 from api.inference import Inference
 
 
@@ -48,6 +50,9 @@ def inference(data: DataModel):
     return ORJSONResponse(response)
 
 
-@app.get("api/attentions")
+@app.get("api/news")
 def attentions():
-    pass
+    news = get_news(config_secrets)
+    response = news.to_json()
+
+    return response

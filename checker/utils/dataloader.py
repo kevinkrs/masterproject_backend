@@ -4,7 +4,6 @@ import os
 import nltk
 import pandas as pd
 import re
-
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
 
@@ -70,7 +69,6 @@ class Dataloader:
     def text_preprocessing(self, s: str):
         """
         - Lowercase the sentence
-        - Change "'t" to "not"
         - Remove "@name"
         - Remove other special characters
         - Remove stop words except "not" and "can"
@@ -86,7 +84,13 @@ class Dataloader:
 
         # Remove stopwords except 'not' and 'can'
         s = " ".join(
-            [word for word in s.split() if word not in stopwords.words("english")]
+            [
+                word
+                for word in s.split()
+                if word not in stopwords.words("english")
+                # TODO: Check out if not and can change model badly or to something better
+                # or word in ["not", "can"]
+            ]
         )
         # Remove trailing whitespace
         s = re.sub(r"\s+", " ", s).strip()

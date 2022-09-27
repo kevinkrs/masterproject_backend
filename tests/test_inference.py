@@ -19,7 +19,7 @@ def test_inference_mode():
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
-    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
+    with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
     raw = {

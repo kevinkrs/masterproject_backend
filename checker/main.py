@@ -52,6 +52,6 @@ def inference(data: DataModel):
 
 @app.get("/api/news")
 def attentions():
-    response = get_news_from_csv(config)
+    response = get_news(config_secrets)
 
     return response

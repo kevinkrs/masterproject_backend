@@ -1,14 +1,17 @@
-import pymongo
+import os
+import json
+import requests
 import pandas as pd
-import os, json
+import pymongo
 
 from bson.json_util import dumps
+from checker.config import config_secrets
 from pytunneling import TunnelNetwork
 
-base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from checker.api.news import get_news_from_csv
 
 
-def get_news(config_secrets):
+def test_news_fetching():
     username = config_secrets.USERNAME
     passwort = config_secrets.PASSWORD
     host = config_secrets.HOST
@@ -39,19 +42,7 @@ def get_news(config_secrets):
             password="mongoadmin",
         )
         facts_db = client["facts"]
-        politifact = facts_db.politifact.find_one()
+        politifact = facts_db.politifact.find().sort("statementdate", -1).limit(20)
         response = dumps(politifact)
 
-    return response
-
-
-def get_news_from_csv(config):
-
-    RAW_PATH = config["raw_data_path"]
-    df = pd.read_csv(os.path.join(base_dir, RAW_PATH), header=0, sep=",")
-    df["statementdate"] = pd.to_datetime(df["statementdate"])
-    df = df.sort_values(by="statementdate", ascending=False)
-    # df['statementdate'] = df['statementdate'].astype(str)
-    resp = df[:10]
-
-    return resp
+    print("finished")

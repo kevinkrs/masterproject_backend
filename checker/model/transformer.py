@@ -169,7 +169,6 @@ def train_ray(
     config, datamodule, data_dir=None, num_epochs=10, num_gpus=0, checkpoint_dir=None
 ):
     model = LModule(config["type"])
-    dm = datamodule
     metrics = {"loss": "ptl/val_loss", "acc": "ptl/val_accuracy"}
     callbacks = [TuneReportCallback(metrics, on="validation_end")]
     trainer = Trainer(
@@ -179,10 +178,10 @@ def train_ray(
         accelerator="auto",
         # strategy=RayStrategy(num_workers=4, use_gpu=True)
     )
-    trainer.fit(model, dm)
+    trainer.fit(model, datamodule)
 
 
-def tune_bert(data_dir):
+def tune_bert(data_dir, datamodule):
 
     num_samples = 10
     num_epochs = 10
@@ -197,6 +196,7 @@ def tune_bert(data_dir):
 
     trainable = tune.with_parameters(
         train_ray,
+        datamodule=datamodule,
         data_dir=data_dir,
         num_epochs=num_epochs,
         num_gpus=gpus_per_trial,

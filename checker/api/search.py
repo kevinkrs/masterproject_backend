@@ -1,9 +1,8 @@
-import pymongo
-from pytunneling import TunnelNetwork
 import pandas as pd
 import os
 import json
 import torch
+from datasets import Dataset
 
 from transformers import AutoModel, AutoTokenizer
 
@@ -27,7 +26,8 @@ class SemanticSearch:
     def create_embeddings(self):
         # create embeddings
         raw_path = os.path.join(self.base_dir, self.config["raw_data_path"])
-        facts_dataset = pd.read_csv(raw_path)
+        facts_dataset_df = pd.read_csv(raw_path)
+        facts_dataset = Dataset.from_pandas(facts_dataset_df)
         facts_dataset = facts_dataset.map(SemanticSearch.concatenate_text)
         embeddings_dataset = facts_dataset.map(
             lambda x: {"embeddings": self.get_embeddings(
@@ -51,9 +51,9 @@ class SemanticSearch:
     @staticmethod
     def concatenate_text(fatcs):
         return {
-            "text": fatcs["title"] + " from the " + fatcs["factcheckdate"].strftime('%Y-%m-%d')
+            "text": fatcs["title"] + " from the " + fatcs["factcheckdate"] #.strftime('%Y-%m-%d')
             + " \n "
-            + fatcs["long_text"]
+            + str(fatcs["long_text"] or '')
             + " \n "
             + str(fatcs["short_text"] or '')
         }

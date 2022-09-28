@@ -3,8 +3,7 @@ import os
 import logging
 
 from checker.model.transformer import TransformerModel
-from checker.modules.dataset_module import TransformerDataModule
-
+from checker.utils.dataset_module import TransformerDataModule
 
 
 def test_run_metric_calculation():
@@ -18,10 +17,9 @@ def test_run_metric_calculation():
 
     with open(os.path.join(base_dir, "checker/config/config.json")) as f:
         config = json.load(f)
-    datamodule = TransformerDataModule(config["type"])
+    datamodule = TransformerDataModule()
     datamodule.setup("fit")
     # next(iter(dataloader.train_dataloader()))
-
 
     model = TransformerModel(config, load_from_ckpt=True)
 

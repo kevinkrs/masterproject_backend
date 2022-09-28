@@ -1,25 +1,30 @@
 import logging
 import pymongo
-import json
 import os
 import nltk
 import pandas as pd
-import config_secrets
+import re
 from pytunneling import TunnelNetwork
 from nltk.corpus import stopwords
-import re
 
 
 class Dataloader:
-    def __init__(self):
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        with open(os.path.join(base_dir, "config/config.json")) as f:
-            config = json.load(f)
+    """Dataloader class witch contains all important"""
+
+    def __init__(self, config, secrets):
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         logger = logging.getLogger()
         nltk.download("stopwords")
         self.config = config
         self.logger = logger
-        self.config_secrets = config_secrets
+        self.config_secrets = secrets
+        os.makedirs(os.path.join(base_dir, "data", "raw"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "full"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "train"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "val"), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, "data", "test"), exist_ok=True)
 
     def load_data_from_db(self, path: str):
         username = self.config_secrets.USERNAME
@@ -43,7 +48,7 @@ class Dataloader:
         ]
 
         with TunnelNetwork(
-                tunnel_info=tunnel_info, target_ip="127.0.0.1", target_port=27017
+            tunnel_info=tunnel_info, target_ip="127.0.0.1", target_port=27017
         ) as tn:
             self.logger.info(f"Tunnel available at localhost:{tn.local_bind_port}")
             client = pymongo.MongoClient(
@@ -61,10 +66,11 @@ class Dataloader:
 
             self.logger.info(f"Dataframe successfully written as csv to {path}")
 
-    def text_preprocessing(s: str):
+        return True
+
+    def text_preprocessing(self, s: str):
         """
         - Lowercase the sentence
-        - Change "'t" to "not"
         - Remove "@name"
         - Remove other special characters
         - Remove stop words except "not" and "can"
@@ -83,7 +89,9 @@ class Dataloader:
             [
                 word
                 for word in s.split()
-                if word not in stopwords.words("english") or word in ["not", "can"]
+                if word not in stopwords.words("english")
+                # TODO: Check out if not and can change model badly or to something better
+                or word in ["not", "can"]
             ]
         )
         # Remove trailing whitespace
@@ -109,7 +117,6 @@ class Dataloader:
 
         return s
 
-
     def preprocess_cleaning(self, raw_path):
         names = [
             "_id",
@@ -124,7 +131,6 @@ class Dataloader:
             "sources",
             "long_text",
             "short_text",
-            "text",
         ]
 
         df_raw = pd.read_csv(raw_path, sep=",")
@@ -136,24 +142,16 @@ class Dataloader:
         df_cleaned["label"] = df_cleaned.label.apply(self.get_binary_label)
         df = df_cleaned[names]
 
-        # Transform label to expected torch target shape (x,2)
-        # True, False = [1,0] | [0,1]
-        df["label"] = df["label"].apply(lambda x: [1, 0] if x else [0, 1])
+        df["label"] = df["label"].apply(lambda x: 1 if x else 0)
 
-        df["text"] = df.text.astype(str)
+        # df['short_text'] = df.short_text.apply(preprocess_summarizer)
 
-        # [OPTIONAL]
-        if self.config["long_text_summarization"]:
-            df["text"] = df.text.apply(self.preprocess_summarizer)
-
-        df["text"] = df.text.apply(self.text_preprocessing)
-
-        # Save cleaned full dataset
-        df.to_csv("data/full/df_cleaned.csv")
+        df["title"] = df.title.apply(self.text_preprocessing)
+        df["short_text"] = df.short_text.apply(self.text_preprocessing)
 
         return df
 
-    def create_model_data(self, raw_path, train_path, valid_path, test_path):
+    def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
         df = self.preprocess_cleaning(raw_path)
 
         train_valid = df.sample(frac=0.9, random_state=12)
@@ -161,6 +159,7 @@ class Dataloader:
         valid = train_valid.drop(train.index)  # 10%
         test = df.drop(train_valid.index)  # 10%
 
+        df.to_csv(full_path)
         train.to_csv(train_path)
         valid.to_csv(valid_path)
         test.to_csv(test_path)

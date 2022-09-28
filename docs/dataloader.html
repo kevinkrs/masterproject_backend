@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>dataloader API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>dataloader</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import logging
+import pymongo
+import os
+import nltk
+import pandas as pd
+import re
+from pytunneling import TunnelNetwork
+from nltk.corpus import stopwords
+
+
+class Dataloader:
+    &#34;&#34;&#34;Dataloader class witch contains all important&#34;&#34;&#34;
+
+    def __init__(self, config, secrets):
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
+        logger = logging.getLogger()
+        nltk.download(&#34;stopwords&#34;)
+        self.config = config
+        self.logger = logger
+        self.config_secrets = secrets
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;raw&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;full&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;train&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;val&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;test&#34;), exist_ok=True)
+
+    def load_data_from_db(self, path: str):
+        username = self.config_secrets.USERNAME
+        passwort = self.config_secrets.PASSWORD
+        host = self.config_secrets.HOST
+        host2 = self.config_secrets.HOST2
+        ssh_username = self.config_secrets.SSH_USERNAME
+        ssh_password = self.config_secrets.SSH_PASSWORD
+
+        tunnel_info = [
+            {
+                &#34;ssh_address_or_host&#34;: host,
+                &#34;ssh_username&#34;: username,
+                &#34;ssh_password&#34;: passwort,
+            },
+            {
+                &#34;ssh_address_or_host&#34;: host2,
+                &#34;ssh_username&#34;: ssh_username,
+                &#34;ssh_password&#34;: ssh_password,
+            },
+        ]
+
+        with TunnelNetwork(
+            tunnel_info=tunnel_info, target_ip=&#34;127.0.0.1&#34;, target_port=27017
+        ) as tn:
+            self.logger.info(f&#34;Tunnel available at localhost:{tn.local_bind_port}&#34;)
+            client = pymongo.MongoClient(
+                host=&#34;localhost&#34;,
+                port=tn.local_bind_port,
+                username=&#34;mongoadmin&#34;,
+                password=&#34;mongoadmin&#34;,
+            )
+            self.logger.info(client.list_database_names())
+            facts_db = client[&#34;facts&#34;]
+            politifact = facts_db.politifact
+            df = pd.DataFrame(list(politifact.find()))
+            # Write raw dataframe
+            df.to_csv(path)
+
+            self.logger.info(f&#34;Dataframe successfully written as csv to {path}&#34;)
+
+        return True
+
+    def text_preprocessing(self, s: str):
+        &#34;&#34;&#34;
+        - Lowercase the sentence
+        - Remove &#34;@name&#34;
+        - Remove other special characters
+        - Remove stop words except &#34;not&#34; and &#34;can&#34;
+        - Remove trailing whitespace
+        &#34;&#34;&#34;
+        s = s.lower()
+
+        # Remove some special characters
+        s = re.sub(r&#34;([\;\:\|•«\n])&#34;, &#34; &#34;, s)
+
+        # Remove quotes
+        s = re.sub(r&#39;([\&#39;&#34;`])\s*\1\s*&#39;, &#34;&#34;, s)
+
+        # Remove stopwords except &#39;not&#39; and &#39;can&#39;
+        s = &#34; &#34;.join(
+            [
+                word
+                for word in s.split()
+                if word not in stopwords.words(&#34;english&#34;)
+                # TODO: Check out if not and can change model badly or to something better
+                or word in [&#34;not&#34;, &#34;can&#34;]
+            ]
+        )
+        # Remove trailing whitespace
+        s = re.sub(r&#34;\s+&#34;, &#34; &#34;, s).strip()
+
+        return s
+
+    def drop_empty(self, df):
+        df_cleaned = df.dropna()
+        return df_cleaned
+
+    def get_binary_label(self, label: str) -&gt; bool:
+        if label in {&#34;pants-fire&#34;, &#34;barely-true&#34;, &#34;false&#34;}:
+            return False
+        elif label in {&#34;true&#34;, &#34;half-true&#34;, &#34;mostly-true&#34;}:
+            return True
+
+    def preprocess_summarizer(self, text):
+        from transformers import pipeline
+
+        summarizer = pipeline(&#34;summarization&#34;, model=&#34;facebook/bart-large-cnn&#34;)
+        s = summarizer(text, max_length=512, min_length=20)
+
+        return s
+
+    def preprocess_cleaning(self, raw_path):
+        names = [
+            &#34;_id&#34;,
+            &#34;title&#34;,
+            &#34;url&#34;,
+            &#34;person&#34;,
+            &#34;statementdate&#34;,
+            &#34;source&#34;,
+            &#34;label&#34;,
+            &#34;factcheckdate&#34;,
+            &#34;factchecker&#34;,
+            &#34;sources&#34;,
+            &#34;long_text&#34;,
+            &#34;short_text&#34;,
+        ]
+
+        df_raw = pd.read_csv(raw_path, sep=&#34;,&#34;)
+        df_raw = df_raw.drop(index=0)
+        # df_raw = df_raw[:100] # Only for debug
+        df_cleaned = self.drop_empty(df_raw)
+
+        # Apply binary label
+        df_cleaned[&#34;label&#34;] = df_cleaned.label.apply(self.get_binary_label)
+        df = df_cleaned[names]
+
+        df[&#34;label&#34;] = df[&#34;label&#34;].apply(lambda x: 1 if x else 0)
+
+        # df[&#39;short_text&#39;] = df.short_text.apply(preprocess_summarizer)
+
+        df[&#34;title&#34;] = df.title.apply(self.text_preprocessing)
+        df[&#34;short_text&#34;] = df.short_text.apply(self.text_preprocessing)
+
+        return df
+
+    def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
+        df = self.preprocess_cleaning(raw_path)
+
+        train_valid = df.sample(frac=0.9, random_state=12)
+        train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
+        valid = train_valid.drop(train.index)  # 10%
+        test = df.drop(train_valid.index)  # 10%
+
+        df.to_csv(full_path)
+        train.to_csv(train_path)
+        valid.to_csv(valid_path)
+        test.to_csv(test_path)
+
+        self.logger.info(&#34;Successfully created test, valid and train dataset&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="dataloader.Dataloader"><code class="flex name class">
+<span>class <span class="ident">Dataloader</span></span>
+<span>(</span><span>config, secrets)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Dataloader class witch contains all important</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Dataloader:
+    &#34;&#34;&#34;Dataloader class witch contains all important&#34;&#34;&#34;
+
+    def __init__(self, config, secrets):
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
+        logger = logging.getLogger()
+        nltk.download(&#34;stopwords&#34;)
+        self.config = config
+        self.logger = logger
+        self.config_secrets = secrets
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;raw&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;full&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;train&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;val&#34;), exist_ok=True)
+        os.makedirs(os.path.join(base_dir, &#34;data&#34;, &#34;test&#34;), exist_ok=True)
+
+    def load_data_from_db(self, path: str):
+        username = self.config_secrets.USERNAME
+        passwort = self.config_secrets.PASSWORD
+        host = self.config_secrets.HOST
+        host2 = self.config_secrets.HOST2
+        ssh_username = self.config_secrets.SSH_USERNAME
+        ssh_password = self.config_secrets.SSH_PASSWORD
+
+        tunnel_info = [
+            {
+                &#34;ssh_address_or_host&#34;: host,
+                &#34;ssh_username&#34;: username,
+                &#34;ssh_password&#34;: passwort,
+            },
+            {
+                &#34;ssh_address_or_host&#34;: host2,
+                &#34;ssh_username&#34;: ssh_username,
+                &#34;ssh_password&#34;: ssh_password,
+            },
+        ]
+
+        with TunnelNetwork(
+            tunnel_info=tunnel_info, target_ip=&#34;127.0.0.1&#34;, target_port=27017
+        ) as tn:
+            self.logger.info(f&#34;Tunnel available at localhost:{tn.local_bind_port}&#34;)
+            client = pymongo.MongoClient(
+                host=&#34;localhost&#34;,
+                port=tn.local_bind_port,
+                username=&#34;mongoadmin&#34;,
+                password=&#34;mongoadmin&#34;,
+            )
+            self.logger.info(client.list_database_names())
+            facts_db = client[&#34;facts&#34;]
+            politifact = facts_db.politifact
+            df = pd.DataFrame(list(politifact.find()))
+            # Write raw dataframe
+            df.to_csv(path)
+
+            self.logger.info(f&#34;Dataframe successfully written as csv to {path}&#34;)
+
+        return True
+
+    def text_preprocessing(self, s: str):
+        &#34;&#34;&#34;
+        - Lowercase the sentence
+        - Remove &#34;@name&#34;
+        - Remove other special characters
+        - Remove stop words except &#34;not&#34; and &#34;can&#34;
+        - Remove trailing whitespace
+        &#34;&#34;&#34;
+        s = s.lower()
+
+        # Remove some special characters
+        s = re.sub(r&#34;([\;\:\|•«\n])&#34;, &#34; &#34;, s)
+
+        # Remove quotes
+        s = re.sub(r&#39;([\&#39;&#34;`])\s*\1\s*&#39;, &#34;&#34;, s)
+
+        # Remove stopwords except &#39;not&#39; and &#39;can&#39;
+        s = &#34; &#34;.join(
+            [
+                word
+                for word in s.split()
+                if word not in stopwords.words(&#34;english&#34;)
+                # TODO: Check out if not and can change model badly or to something better
+                or word in [&#34;not&#34;, &#34;can&#34;]
+            ]
+        )
+        # Remove trailing whitespace
+        s = re.sub(r&#34;\s+&#34;, &#34; &#34;, s).strip()
+
+        return s
+
+    def drop_empty(self, df):
+        df_cleaned = df.dropna()
+        return df_cleaned
+
+    def get_binary_label(self, label: str) -&gt; bool:
+        if label in {&#34;pants-fire&#34;, &#34;barely-true&#34;, &#34;false&#34;}:
+            return False
+        elif label in {&#34;true&#34;, &#34;half-true&#34;, &#34;mostly-true&#34;}:
+            return True
+
+    def preprocess_summarizer(self, text):
+        from transformers import pipeline
+
+        summarizer = pipeline(&#34;summarization&#34;, model=&#34;facebook/bart-large-cnn&#34;)
+        s = summarizer(text, max_length=512, min_length=20)
+
+        return s
+
+    def preprocess_cleaning(self, raw_path):
+        names = [
+            &#34;_id&#34;,
+            &#34;title&#34;,
+            &#34;url&#34;,
+            &#34;person&#34;,
+            &#34;statementdate&#34;,
+            &#34;source&#34;,
+            &#34;label&#34;,
+            &#34;factcheckdate&#34;,
+            &#34;factchecker&#34;,
+            &#34;sources&#34;,
+            &#34;long_text&#34;,
+            &#34;short_text&#34;,
+        ]
+
+        df_raw = pd.read_csv(raw_path, sep=&#34;,&#34;)
+        df_raw = df_raw.drop(index=0)
+        # df_raw = df_raw[:100] # Only for debug
+        df_cleaned = self.drop_empty(df_raw)
+
+        # Apply binary label
+        df_cleaned[&#34;label&#34;] = df_cleaned.label.apply(self.get_binary_label)
+        df = df_cleaned[names]
+
+        df[&#34;label&#34;] = df[&#34;label&#34;].apply(lambda x: 1 if x else 0)
+
+        # df[&#39;short_text&#39;] = df.short_text.apply(preprocess_summarizer)
+
+        df[&#34;title&#34;] = df.title.apply(self.text_preprocessing)
+        df[&#34;short_text&#34;] = df.short_text.apply(self.text_preprocessing)
+
+        return df
+
+    def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
+        df = self.preprocess_cleaning(raw_path)
+
+        train_valid = df.sample(frac=0.9, random_state=12)
+        train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
+        valid = train_valid.drop(train.index)  # 10%
+        test = df.drop(train_valid.index)  # 10%
+
+        df.to_csv(full_path)
+        train.to_csv(train_path)
+        valid.to_csv(valid_path)
+        test.to_csv(test_path)
+
+        self.logger.info(&#34;Successfully created test, valid and train dataset&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="dataloader.Dataloader.create_model_data"><code class="name flex">
+<span>def <span class="ident">create_model_data</span></span>(<span>self, raw_path, full_path, train_path, valid_path, test_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_model_data(self, raw_path, full_path, train_path, valid_path, test_path):
+    df = self.preprocess_cleaning(raw_path)
+
+    train_valid = df.sample(frac=0.9, random_state=12)
+    train = train_valid.sample(frac=(0.8 / 0.9), random_state=12)  # 80%
+    valid = train_valid.drop(train.index)  # 10%
+    test = df.drop(train_valid.index)  # 10%
+
+    df.to_csv(full_path)
+    train.to_csv(train_path)
+    valid.to_csv(valid_path)
+    test.to_csv(test_path)
+
+    self.logger.info(&#34;Successfully created test, valid and train dataset&#34;)</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.drop_empty"><code class="name flex">
+<span>def <span class="ident">drop_empty</span></span>(<span>self, df)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def drop_empty(self, df):
+    df_cleaned = df.dropna()
+    return df_cleaned</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.get_binary_label"><code class="name flex">
+<span>def <span class="ident">get_binary_label</span></span>(<span>self, label: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binary_label(self, label: str) -&gt; bool:
+    if label in {&#34;pants-fire&#34;, &#34;barely-true&#34;, &#34;false&#34;}:
+        return False
+    elif label in {&#34;true&#34;, &#34;half-true&#34;, &#34;mostly-true&#34;}:
+        return True</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.load_data_from_db"><code class="name flex">
+<span>def <span class="ident">load_data_from_db</span></span>(<span>self, path: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_data_from_db(self, path: str):
+    username = self.config_secrets.USERNAME
+    passwort = self.config_secrets.PASSWORD
+    host = self.config_secrets.HOST
+    host2 = self.config_secrets.HOST2
+    ssh_username = self.config_secrets.SSH_USERNAME
+    ssh_password = self.config_secrets.SSH_PASSWORD
+
+    tunnel_info = [
+        {
+            &#34;ssh_address_or_host&#34;: host,
+            &#34;ssh_username&#34;: username,
+            &#34;ssh_password&#34;: passwort,
+        },
+        {
+            &#34;ssh_address_or_host&#34;: host2,
+            &#34;ssh_username&#34;: ssh_username,
+            &#34;ssh_password&#34;: ssh_password,
+        },
+    ]
+
+    with TunnelNetwork(
+        tunnel_info=tunnel_info, target_ip=&#34;127.0.0.1&#34;, target_port=27017
+    ) as tn:
+        self.logger.info(f&#34;Tunnel available at localhost:{tn.local_bind_port}&#34;)
+        client = pymongo.MongoClient(
+            host=&#34;localhost&#34;,
+            port=tn.local_bind_port,
+            username=&#34;mongoadmin&#34;,
+            password=&#34;mongoadmin&#34;,
+        )
+        self.logger.info(client.list_database_names())
+        facts_db = client[&#34;facts&#34;]
+        politifact = facts_db.politifact
+        df = pd.DataFrame(list(politifact.find()))
+        # Write raw dataframe
+        df.to_csv(path)
+
+        self.logger.info(f&#34;Dataframe successfully written as csv to {path}&#34;)
+
+    return True</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.preprocess_cleaning"><code class="name flex">
+<span>def <span class="ident">preprocess_cleaning</span></span>(<span>self, raw_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def preprocess_cleaning(self, raw_path):
+    names = [
+        &#34;_id&#34;,
+        &#34;title&#34;,
+        &#34;url&#34;,
+        &#34;person&#34;,
+        &#34;statementdate&#34;,
+        &#34;source&#34;,
+        &#34;label&#34;,
+        &#34;factcheckdate&#34;,
+        &#34;factchecker&#34;,
+        &#34;sources&#34;,
+        &#34;long_text&#34;,
+        &#34;short_text&#34;,
+    ]
+
+    df_raw = pd.read_csv(raw_path, sep=&#34;,&#34;)
+    df_raw = df_raw.drop(index=0)
+    # df_raw = df_raw[:100] # Only for debug
+    df_cleaned = self.drop_empty(df_raw)
+
+    # Apply binary label
+    df_cleaned[&#34;label&#34;] = df_cleaned.label.apply(self.get_binary_label)
+    df = df_cleaned[names]
+
+    df[&#34;label&#34;] = df[&#34;label&#34;].apply(lambda x: 1 if x else 0)
+
+    # df[&#39;short_text&#39;] = df.short_text.apply(preprocess_summarizer)
+
+    df[&#34;title&#34;] = df.title.apply(self.text_preprocessing)
+    df[&#34;short_text&#34;] = df.short_text.apply(self.text_preprocessing)
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.preprocess_summarizer"><code class="name flex">
+<span>def <span class="ident">preprocess_summarizer</span></span>(<span>self, text)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def preprocess_summarizer(self, text):
+    from transformers import pipeline
+
+    summarizer = pipeline(&#34;summarization&#34;, model=&#34;facebook/bart-large-cnn&#34;)
+    s = summarizer(text, max_length=512, min_length=20)
+
+    return s</code></pre>
+</details>
+</dd>
+<dt id="dataloader.Dataloader.text_preprocessing"><code class="name flex">
+<span>def <span class="ident">text_preprocessing</span></span>(<span>self, s: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><ul>
+<li>Lowercase the sentence</li>
+<li>Remove "@name"</li>
+<li>Remove other special characters</li>
+<li>Remove stop words except "not" and "can"</li>
+<li>Remove trailing whitespace</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def text_preprocessing(self, s: str):
+    &#34;&#34;&#34;
+    - Lowercase the sentence
+    - Remove &#34;@name&#34;
+    - Remove other special characters
+    - Remove stop words except &#34;not&#34; and &#34;can&#34;
+    - Remove trailing whitespace
+    &#34;&#34;&#34;
+    s = s.lower()
+
+    # Remove some special characters
+    s = re.sub(r&#34;([\;\:\|•«\n])&#34;, &#34; &#34;, s)
+
+    # Remove quotes
+    s = re.sub(r&#39;([\&#39;&#34;`])\s*\1\s*&#39;, &#34;&#34;, s)
+
+    # Remove stopwords except &#39;not&#39; and &#39;can&#39;
+    s = &#34; &#34;.join(
+        [
+            word
+            for word in s.split()
+            if word not in stopwords.words(&#34;english&#34;)
+            # TODO: Check out if not and can change model badly or to something better
+            or word in [&#34;not&#34;, &#34;can&#34;]
+        ]
+    )
+    # Remove trailing whitespace
+    s = re.sub(r&#34;\s+&#34;, &#34; &#34;, s).strip()
+
+    return s</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="dataloader.Dataloader" href="#dataloader.Dataloader">Dataloader</a></code></h4>
+<ul class="">
+<li><code><a title="dataloader.Dataloader.create_model_data" href="#dataloader.Dataloader.create_model_data">create_model_data</a></code></li>
+<li><code><a title="dataloader.Dataloader.drop_empty" href="#dataloader.Dataloader.drop_empty">drop_empty</a></code></li>
+<li><code><a title="dataloader.Dataloader.get_binary_label" href="#dataloader.Dataloader.get_binary_label">get_binary_label</a></code></li>
+<li><code><a title="dataloader.Dataloader.load_data_from_db" href="#dataloader.Dataloader.load_data_from_db">load_data_from_db</a></code></li>
+<li><code><a title="dataloader.Dataloader.preprocess_cleaning" href="#dataloader.Dataloader.preprocess_cleaning">preprocess_cleaning</a></code></li>
+<li><code><a title="dataloader.Dataloader.preprocess_summarizer" href="#dataloader.Dataloader.preprocess_summarizer">preprocess_summarizer</a></code></li>
+<li><code><a title="dataloader.Dataloader.text_preprocessing" href="#dataloader.Dataloader.text_preprocessing">text_preprocessing</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

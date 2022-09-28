@@ -2,11 +2,12 @@ import json
 import logging
 import os
 import mlflow
+import torch
 
-from datetime import datetime
 from model.transformer import TransformerModel
 from utils.dataloader import Dataloader
-from modules.dataset_module import TransformerDataModule
+from utils.dataset_module import TransformerDataModule
+from config import config_secrets
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -16,59 +17,40 @@ LOGGER = logging.getLogger(__name__)
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 os.environ["TOKENIZER_PARALLELISM"] = "true"
 
-# def read_args() -> argparse.Namespace:
-#     parser = argparse.ArgumentParser()
-#     # Defining command line input "--config-file"
-#     parser.add_argument("--config-file", type=str)
-#     return parser.parse_args()
-
-
-# def set_random_seed(val: int = 1) -> None:
-#     random.seed(val)
-#     np.random.seed(val)
-#     # Torch-specific random-seeds
-#     torch.manual_seed(val)
-#     torch.cuda.manual_seed_all(val)
-
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if __name__ == "__main__":
-    # Triggered via "python checker/train.py --config-file config/distilbert.json -> Config is read and ran by the code"
-    # args = read_args()
-    # with open(args.config_file) as f:
-    #     config = json.load(f)
-    # set some environment variables
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(base_dir, "checker/config/config.json")) as f:
+    with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
-    # set_random_seed(42)
     mlflow.set_experiment(config["model"])
 
     model_output_path = os.path.join(base_dir, config["model_output_path"])
-    # Update full model output path
-    config["model_output_path"] = model_output_path
-    os.makedirs(model_output_path, exist_ok=True)
 
-    # Copy config to model directory
-    # copy(args.config_file, model_output_path)
+    os.makedirs(os.path.join(base_dir, config["model_output_path"]), exist_ok=True)
+
     with mlflow.start_run() as run:
         with open(os.path.join(model_output_path, "meta.json"), "w") as f:
             json.dump({"mlflow_run_id": run.info.run_id}, f)
         mlflow.set_tags({"evaluate": config["evaluate"]})
 
         RAW_PATH = os.path.join(base_dir, config["raw_data_path"])
+        FULL_PATH = os.path.join(base_dir, config["full_data_path"])
         TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
         VAL_PATH = os.path.join(base_dir, config["val_data_path"])
         TEST_PATH = os.path.join(base_dir, config["test_data_path"])
 
         if config["update_data"]:
-            loader = Dataloader()
+            LOGGER.info("Data preprocessing started")
+            loader = Dataloader(config, secrets=config_secrets)
             loader.load_data_from_db(RAW_PATH)
-            loader.create_model_data(RAW_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH)
+            loader.create_model_data(
+                RAW_PATH, FULL_PATH, TRAIN_PATH, VAL_PATH, TEST_PATH
+            )
 
         # Datamodule handles loading the data and tokenizing it
-        datamodule = TransformerDataModule(config["type"])
+        datamodule = TransformerDataModule(config)
         datamodule.setup("fit")
 
         if config["from_ckp"]:
@@ -79,7 +61,6 @@ if __name__ == "__main__":
         if config["train"]:
             LOGGER.info("Training model...")
             model.train(datamodule)
-
 
         validation = model.validate_model(datamodule)
         dataloader_val = datamodule.val_dataloader()

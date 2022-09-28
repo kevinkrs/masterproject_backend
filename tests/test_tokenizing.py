@@ -6,11 +6,11 @@ import json
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 def test_tokenizer():
     with open(os.path.join(base_dir, "config/config.json")) as f:
         config = json.load(f)
 
-    RAW_PATH = os.path.join(base_dir, config["raw_data_path"])
     TRAIN_PATH = os.path.join(base_dir, config["train_data_path"])
     VAL_PATH = os.path.join(base_dir, config["val_data_path"])
     TEST_PATH = os.path.join(base_dir, config["test_data_path"])
@@ -25,4 +25,4 @@ def test_tokenizer():
     val_datapoints = tokenizer_base(val_raw)
     test_datapoints = tokenizer_base(test_raw)
 
-    return(train_datapoints, val_datapoints, test_datapoints)
+    return (train_datapoints, val_datapoints, test_datapoints)

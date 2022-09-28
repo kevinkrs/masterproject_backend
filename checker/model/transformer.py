@@ -18,6 +18,8 @@ from sklearn.metrics import roc_auc_score
 
 
 class LModule(pl.LightningModule):
+    """LModule inheriting the pytorch_lightning LightningModule."""
+
     def __init__(self, model_name_or_path: str):
         super().__init__()
         self.config = AutoConfig.from_pretrained(
@@ -69,10 +71,14 @@ class LModule(pl.LightningModule):
 
 # Model Definition: Add BaseModel once module import error fixed
 class TransformerModel(BaseModel):
+    """Class to select, train, validate and inference a chosen model defined in LModule. Inherits from BaseModel
+    class. Requires config."""
+
     def __init__(self, config, load_from_ckpt=False):
+        """Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback
+        for saving the best model as well as the trainer used for the model."""
         self.config = config
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(
                 os.path.join(
@@ -103,6 +109,7 @@ class TransformerModel(BaseModel):
             )
 
     def train(self, datamodule):
+
         self.trainer.fit(self.model, datamodule)
 
     def validate_model(self, datamodule):

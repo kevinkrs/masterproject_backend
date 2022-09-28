@@ -5,8 +5,10 @@ from typing import Optional
 import numpy as np
 
 
-
 class BaseModel(ABC):
+
+    """Transformer abstract base class to ensure all relevant methods are implemented."""
+
     @abstractmethod
     def train(
         self,
@@ -34,9 +36,7 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def compute_metrics(
-        self, dataloader, split: Optional[str] = None
-    ) -> Dict:
+    def compute_metrics(self, dataloader, split: Optional[str] = None) -> Dict:
         """
         Compute a set of model-specifc metrics on the provided set of datapoints.
         :param eval_datapoints: Datapoints to compute metrics for

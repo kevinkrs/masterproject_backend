@@ -18,7 +18,6 @@ class HyperParamTuning:
     def run(self):
         def train_ray(data_dir=None, num_epochs=15, num_gpus=1):
             metrics = {"loss": "avg_val_loss"}
-
             callbacks = [TuneReportCallback(metrics, on="validation_end")]
             trainer = pl.Trainer(
                 max_epochs=num_epochs,
@@ -27,10 +26,9 @@ class HyperParamTuning:
                 strategy=RayStrategy(num_workers=1, use_gpu=True),
             )
             model = TransformerModel(self.config).model
-            dm = TransformerDataMdoule(self.config)
+            dm = TransformerDataModule(self.config)
 
             trainer.fit(model, dm)
-
 
         data = os.path.join(self.base_dir, self.config["full_data_path"])
 
@@ -76,20 +74,22 @@ class HyperParamTuning:
           ),
           param_space=config
         )
-         
+
         results = tuner.fit()
         analysis = results.get_best_result().config
         """
 
         analysis = tune.run(
-        train_ray,
-        metric="loss",
-        mode="min",
-        config=config,
-        num_samples=10,
-        resources_per_trial=get_tune_resources(num_workers=1,num_cpus_per_worker=3, use_gpu=True),
+            train_ray,
+            metric="loss",
+            mode="min",
+            config=config,
+            num_samples=10,
+            resources_per_trial=get_tune_resources(
+                num_workers=1, num_cpus_per_worker=3, use_gpu=True
+            ),
+            name="tune_bert",
+        )
 
-        name="tune_bert")
-        
         print("Best hyperparameters found were: ", analysis.best_config)
         return analysis

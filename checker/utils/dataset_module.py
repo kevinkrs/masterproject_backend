@@ -25,6 +25,7 @@ class TransformerDataModule(pl.LightningDataModule):
         base_dir = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
+        self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained(
             config["type"], padding_side="right"
         )

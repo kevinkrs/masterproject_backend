@@ -10,3 +10,6 @@ def test_search():
     results = search.get_similar(body)
     for result in results:
         print(result["text"].strip())
+
+
+test_search()

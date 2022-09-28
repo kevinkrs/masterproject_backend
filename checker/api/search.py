@@ -11,8 +11,7 @@ from transformers import AutoModel, AutoTokenizer
 class SemanticSearch:
 
     def __init__(self):
-        self.base_dir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+        self.base_dir = base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         with open(os.path.join(self.base_dir, "config/config.json")) as f:
             self.config = json.load(f)
         # check if embeddings csv exists

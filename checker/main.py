@@ -10,9 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils.datamodels import DataModel
 from model.transformer import LModule
 
-from config import config_secrets
-
-from api.news import get_news, get_news_from_csv
 from api.inference import Inference
 from api.search import SemanticSearch
 
@@ -51,14 +48,6 @@ def inference(data: DataModel):
     response = {"label": label, "probs": probs, "prob_max": prob_max}
 
     return ORJSONResponse(response)
-
-
-@app.get("/api/news")
-def attentions():
-    response = get_news(config_secrets)
-
-    return response
-    pass
 
 
 @app.post("api/search", response_class=ORJSONResponse)

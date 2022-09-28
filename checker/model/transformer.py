@@ -9,7 +9,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
 
-from base import BaseModel
+from .base import BaseModel
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -50,7 +50,7 @@ class LModule(pl.LightningModule):
         return outputs[0]
 
     def validation_epoch_end(self, outputs) -> None:
-        avg_val_loss = float(sum(outputs[0]) / len(outputs[0]))
+        avg_val_loss = float(sum(outputs) / len(outputs))
         self.log("avg_val_loss", avg_val_loss)
         mlflow.log_metric("avg_val_loss", avg_val_loss, self.current_epoch)
         print(f"Avg val loss: {avg_val_loss}")

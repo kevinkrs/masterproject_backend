@@ -7,7 +7,7 @@
   "test_data_path": "data/test/test_news.csv",
   "embedding_path": "data/embeddings/embeddings.csv",
   "model_output_path": "saved_models/bert-based",
-  "type": "bert-base",
+  "type": "bert-base-uncased",
   "version": "v1",
   "version-dev": "v2-0-0",
   "train": true,

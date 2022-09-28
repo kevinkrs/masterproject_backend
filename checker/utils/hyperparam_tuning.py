@@ -13,24 +13,23 @@ class HyperParamTuning:
     def __init__(self, config):
         self.config = config
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # self.dm = datamodule
 
     def run(self):
-        def train_ray(data_dir=None, num_epochs=15, num_gpus=1):
-            metrics = {"loss": "avg_val_loss"}
+        data_dir = os.path.join(self.base_dir, self.config["full_data_path"])
+
+        def train_ray(data_dir=data_dir, num_epochs=15, num_gpus=1):
+            metrics = {"loss": "val_loss"}
             callbacks = [TuneReportCallback(metrics, on="validation_end")]
             trainer = pl.Trainer(
                 max_epochs=num_epochs,
                 callbacks=callbacks,
-                devices=num_gpus,
-                accelerator="auto",
-                # strategy=RayStrategy(num_workers=1, use_gpu=True),
+                strategy=RayStrategy(num_workers=1, use_gpu=True),
             )
             model = TransformerModel(self.config).model
             dm = TransformerDataModule(self.config)
 
             trainer.fit(model, dm)
-
-        data_dir = os.path.join(self.base_dir, self.config["full_data_path"])
 
         config = {
             "layer_1": tune.choice([32, 64, 128]),
@@ -41,14 +40,11 @@ class HyperParamTuning:
 
         analysis = tune.run(
             train_ray,
-            data_dir=data_dir,
             metric="loss",
             mode="min",
             config=config,
             num_samples=10,
-            resources_per_trial=get_tune_resources(
-                num_workers=1, num_cpus_per_worker=3, use_gpu=True
-            ),
+            resources_per_trial=get_tune_resources(use_gpu=True),
             name="tune_bert",
         )
 

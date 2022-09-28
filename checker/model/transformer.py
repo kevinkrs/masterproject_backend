@@ -18,7 +18,7 @@ from sklearn.metrics import roc_auc_score
 
 
 class LModule(pl.LightningModule):
-    """LModule inhereting the pytorch_lightning LightningModule."""
+    """LModule inheriting the pytorch_lightning LightningModule."""
 
     def __init__(self, model_name_or_path: str):
         super().__init__()

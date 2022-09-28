@@ -18,7 +18,6 @@ class HyperParamTuning:
     def run(self):
         def train_ray(data_dir=None, num_epochs=15, num_gpus=1):
             metrics = {"loss": "avg_val_loss"}
-
             callbacks = [TuneReportCallback(metrics, on="validation_end")]
             trainer = pl.Trainer(
                 max_epochs=num_epochs,

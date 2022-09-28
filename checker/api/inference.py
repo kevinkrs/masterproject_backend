@@ -8,7 +8,9 @@ base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 class Inference:
-    """Inference class loading the model and tokenizer on instantiation"""
+    """Inference class loading the model based on trained model as well as the required tokenizer for inference task.
+    :arg config
+    :arg model"""
 
     def __init__(self, config, model):
         self.model = model
@@ -27,6 +29,7 @@ class Inference:
     def get_prediction(self, data):
         """Prediction function tokenizing the input data, setting the model into eval mode and running inference.
         Function transforms logits into probabilitites and returns the labels, the probabilities and the max probobility.
+        @:arg data
         """
         tokenized_data = self.tokenizer(
             data.text,

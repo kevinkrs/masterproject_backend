@@ -10,7 +10,11 @@ Project structure oriented by the project of mihail911. Thank you for such a bea
 
 
 # Backend API Documentation
-## Backend API Documentation
 - [train.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/train.html)
 - [transformer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/transformer.html)
 - [dataloader.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataloader.html)
+- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataset_module.html)
+- [hyperparam_tuning.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/hyperparam_tuning.html)
+- [inference.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/inference.html)
+- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataset_module.html)
+- [transformer_tokenizer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/transformer_tokenizer.html)

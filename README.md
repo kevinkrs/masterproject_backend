@@ -18,11 +18,11 @@ Since we build our database university internally, the dataloader will not work 
 folder and put our model there.
 
 # Backend API Documentation
-- [train.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/train.html)
-- [transformer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/transformer.html)
-- [dataloader.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataloader.html)
-- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataset_module.html)
-- [hyperparam_tuning.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/hyperparam_tuning.html)
-- [inference.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/inference.html)
-- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataset_module.html)
-- [transformer_tokenizer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/transformer_tokenizer.html)
+- [train.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/train.html)
+- [transformer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/transformer.html)
+- [dataloader.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/dataloader.html)
+- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/dataset_module.html)
+- [hyperparam_tuning.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/hyperparam_tuning.html)
+- [inference.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/inference.html)
+- [dataset_module.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/dataset_module.html)
+- [transformer_tokenizer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/tree/master/docs/transformer_tokenizer.html)

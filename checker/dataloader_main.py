@@ -2,7 +2,7 @@ import json
 import os
 import logging
 
-from checker.utils.dataloader import Dataloader
+from utils.dataloader import Dataloader
 from config import config_secrets
 
 

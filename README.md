@@ -8,18 +8,9 @@ Project structure oriented by the project of mihail911. Thank you for such a bea
   - Creates virtualenv
   - Upgrades pip and installs all relevant requirements
 
-# Starting API server
-1. Navigate into the `api` folder
-2. Run `uvicorn main:app --reload` to start server
-3. Start calling API from any application
 
-## Running model on M1 Mac
-Currently, the support of torch on M1 Metall is a nightly build. Not all features are available.
-Following settings are required
-- Check that following `env` variables are set
-  - `PYTORCH_ENABLE_MPS_FALLBACK=1`
-  - `TOKENIZER_PARALLELISM=true`
-- Check that the prediction function is passing the inputs to the correct device
-
-# Usefull sources
-- https://dvc.org/doc/start/data-management
+# Backend API Documentation
+## Backend API Documentation
+- [train.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/train.html)
+- [transformer.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/transformer.html)
+- [dataloader.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/dataloader.html)

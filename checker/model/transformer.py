@@ -9,7 +9,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification
 
-from .base import BaseModel
+from base import BaseModel
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix

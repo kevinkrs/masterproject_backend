@@ -2,8 +2,7 @@ import os
 import json
 import torch
 
-from transformers import BertTokenizerFast
-
+from transformers import AutoTokenizer
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -23,7 +22,7 @@ class Inference:
             map_location=torch.device("cpu"),
         )
         self.model.load_state_dict(self.checkpoint["state_dict"])
-        self.tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+        self.tokenizer = AutoTokenizer.from_pretrained(config["type"])
 
     def get_prediction(self, data):
         """Prediction function tokenizing the input data, setting the model into eval mode and running inference.

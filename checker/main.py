@@ -14,7 +14,7 @@ from config import config_secrets
 
 from api.news import get_news, get_news_from_csv
 from api.inference import Inference
-
+from api.search import SemanticSearch
 
 logger = logging.getLogger("inference")
 app = FastAPI()
@@ -37,6 +37,9 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 # model = LModule("bert-base-uncased")
 # inference = Inference(config=config, model=model)
+model = LModule("bert-base-uncased")
+inference = Inference(config=config, model=model)
+search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)
@@ -55,3 +58,10 @@ def attentions():
     response = get_news(config_secrets)
 
     return response
+    pass
+
+
+@app.post("api/search", response_class=ORJSONResponse)
+def search(data: DataModel):
+    response = search.get_similar(data)
+    return ORJSONResponse(response)

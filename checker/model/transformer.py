@@ -45,7 +45,6 @@ class LModule(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         outputs = self(**batch)
         self.log("val_loss", outputs[0])
-
         return outputs[0]
 
     def validation_epoch_end(self, outputs) -> None:

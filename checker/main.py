@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from utils.datamodels import DataModel
+from transformers import AutoModelForSequenceClassification
 from model.transformer import LModule
 
 from api.inference import Inference
@@ -32,11 +33,17 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(base_dir, "config/config.json")) as f:
     config = json.load(f)
 
-# model = LModule("bert-base-uncased")
-# inference = Inference(config=config, model=model)
-model = LModule(config["type"])
+
+model = LModule.load_from_checkpoint(
+    os.path.join(
+        base_dir,
+        config["model_output_path"],
+        f"trained_model_{config['type']}-{config['version']}.ckpt",
+    )
+)
+
 inference = Inference(config=config, model=model)
-search = SemanticSearch()
+# search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)

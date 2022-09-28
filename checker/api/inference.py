@@ -15,15 +15,6 @@ class Inference:
     def __init__(self, config, model):
         self.model = model
         self.config = config
-        self.checkpoint = torch.load(
-            os.path.join(
-                base_dir,
-                config["model_output_path"],
-                f"trained_model_{config['type']}-{config['version']}.ckpt",
-            ),
-            map_location=torch.device("cpu"),
-        )
-        self.model.load_state_dict(self.checkpoint["state_dict"])
         self.tokenizer = AutoTokenizer.from_pretrained(config["type"])
 
     def get_prediction(self, data):

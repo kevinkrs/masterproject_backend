@@ -3,7 +3,7 @@ import os
 import logging
 
 from checker.utils.dataloader import Dataloader
-from .config import config_secrets
+from config import config_secrets
 
 
 logger = logging.getLogger("Test")

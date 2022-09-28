@@ -9,6 +9,8 @@ base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 class Inference:
+    """Inference class loading the model and tokenizer on instantiation"""
+
     def __init__(self, config, model):
         self.model = model
         self.config = config
@@ -24,6 +26,9 @@ class Inference:
         self.tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 
     def get_prediction(self, data):
+        """Prediction function tokenizing the input data, setting the model into eval mode and running inference.
+        Function transforms logits into probabilitites and returns the labels, the probabilities and the max probobility.
+        """
         tokenized_data = self.tokenizer(
             data.text,
             data.statementdate,
@@ -52,19 +57,3 @@ class Inference:
             label = "TRUE"
 
         return label, probs.numpy().tolist(), probs.numpy().max().tolist()
-
-    def get_output(self, data):
-        tokenized_data = self.tokenizer(
-            data.text,
-            data.statementdate,
-            return_attention_mask=True,
-            return_tensors="pt",
-            padding="max_length",
-        )
-
-        # Load model from checkpoint
-        self.model.eval()
-        with torch.no_grad():
-            output = self.model(**tokenized_data)
-
-        return output

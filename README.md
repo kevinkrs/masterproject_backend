@@ -14,7 +14,8 @@ available transformer models from [huggingface.co](huggingface.co) and your mode
 Since we build our database university internally, the dataloader will not work for externals.
 4. To run hyperparam tuning run ````make run-hyperparam-tuning```` or just combine tuning and training with `make start-training-with-hyperparam-tuning`
 5. To re-train the model from a checkpoint, just change ```from_ckp=true``` in the ``config.json``
-
+6. If you already have our model and want just to run inference, please create a folder based on the model type (e.g. `bert-based`) in the ``saved_models``
+folder and put our model there.
 
 # Backend API Documentation
 - [train.py](https://htmlpreview.github.io/?https://github.com/kevinkrs/masterproject_backend/blob/check-docs/docs/train.html)

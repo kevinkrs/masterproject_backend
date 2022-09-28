@@ -1,38 +1,46 @@
 import pymongo
 from pytunneling import TunnelNetwork
 import pandas as pd
+import os
+import json
+import torch
+
+from transformers import AutoModel, AutoTokenizer
 
 
 class SemanticSearch:
 
     def __init__(self):
-        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        with open(os.path.join(base_dir, "config/config.json")) as f:
+        self.base_dir = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
+        with open(os.path.join(self.base_dir, "config/config.json")) as f:
             self.config = json.load(f)
         # check if embeddings csv exists
-        self.model, self.tokenizer = self.load_model()
+        self.model, self.tokenizer = SemanticSearch.load_model()
 
-        embedding_path = os.path.join(base_dir, config["embedding_path"])
-        if not os.path.exists(embedding_path) or config["update_data"]:
+        embedding_path = os.path.join(
+            self.base_dir, self.config["embedding_path"])
+        if not os.path.exists(embedding_path) or self.config["update_data"]:
             # if not, create it
             self.create_embeddings()
         self.embeddings = pd.read_csv(embedding_path)
 
-    @staticmethod
-    def create_embeddings():
+    def create_embeddings(self):
         # create embeddings
-        raw_path = os.path.join(base_dir, config["raw_data_path"])
+        raw_path = os.path.join(self.base_dir, self.config["raw_data_path"])
         facts_dataset = pd.read_csv(raw_path)
-        facts_dataset = facts_dataset.map(concatenate_text)
+        facts_dataset = facts_dataset.map(SemanticSearch.concatenate_text)
         embeddings_dataset = facts_dataset.map(
-            lambda x: {"embeddings": get_embeddings(x["text"]).detach().cpu().numpy()[0]}
+            lambda x: {"embeddings": self.get_embeddings(
+                x["text"]).detach().cpu().numpy()[0]}
         )
         embeddings_dataset.add_faiss_index(column="embeddings")
-        embeddings_dataset.to_csv(os.path.join(base_dir, config["embedding_path"]))
+        embeddings_dataset.to_csv(os.path.join(
+            self.base_dir, self.config["embedding_path"]))
 
     def get_similar(self, data):
         num_results = data.get("num_results", 5)
-        embeddings = get_embeddings(data["text"]).cpu().detach().numpy()
+        embeddings = self.get_embeddings(data["text"]).cpu().detach().numpy()
         scores, samples = self.embeddings_dataset.get_nearest_examples(
             "embeddings", embeddings, k=num_results
         )
@@ -45,10 +53,10 @@ class SemanticSearch:
     def concatenate_text(fatcs):
         return {
             "text": fatcs["title"] + " from the " + fatcs["factcheckdate"].strftime('%Y-%m-%d')
-                    + " \n "
-                    + fatcs["long_text"]
-                    + " \n "
-                    + str(fatcs["short_text"] or '')
+            + " \n "
+            + fatcs["long_text"]
+            + " \n "
+            + str(fatcs["short_text"] or '')
         }
 
     @staticmethod
@@ -61,14 +69,14 @@ class SemanticSearch:
         model.to(device)
         return model, tokenizer
 
-    @staticmethod
-    def get_embeddings(text_list):
-        encoded_input = tokenizer(
+    def get_embeddings(self, text_list):
+        encoded_input = self.tokenizer(
             text_list, padding=True, truncation=True, return_tensors="pt"
         )
-        encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
-        model_output = model(**encoded_input)
-        return cls_pooling(model_output)
+        encoded_input = {k: v.to(torch.device)
+                         for k, v in encoded_input.items()}
+        model_output = self.model(**encoded_input)
+        return SemanticSearch.cls_pooling(model_output)
 
     @staticmethod
     def cls_pooling(model_output):

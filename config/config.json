@@ -18,7 +18,7 @@
   "max_seq_length": 64,
   "learning_rate": 3e-5,
   "num_epochs": 5,
-  "update_data": true,
+  "update_data": false,
   "params": {},
   "env": {
     "TOKENIZERS_PARALLELISM": "true",

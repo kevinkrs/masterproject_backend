@@ -46,7 +46,8 @@ from sklearn.metrics import roc_auc_score
 
 
 class LModule(pl.LightningModule):
-    &#34;&#34;&#34;LModule inheriting the pytorch_lightning LightningModule.&#34;&#34;&#34;
+    &#34;&#34;&#34;LModule based on pytorch_ligthning
+    :arg model_name_or_path&#34;&#34;&#34;
 
     def __init__(self, model_name_or_path: str):
         super().__init__()
@@ -78,7 +79,7 @@ class LModule(pl.LightningModule):
         return outputs[0]
 
     def validation_epoch_end(self, outputs) -&gt; None:
-        avg_val_loss = float(sum(outputs[0]) / len(outputs[0]))
+        avg_val_loss = float(sum(outputs) / len(outputs))
         self.log(&#34;avg_val_loss&#34;, avg_val_loss)
         mlflow.log_metric(&#34;avg_val_loss&#34;, avg_val_loss, self.current_epoch)
         print(f&#34;Avg val loss: {avg_val_loss}&#34;)
@@ -100,7 +101,9 @@ class LModule(pl.LightningModule):
 # Model Definition: Add BaseModel once module import error fixed
 class TransformerModel(BaseModel):
     &#34;&#34;&#34;Class to select, train, validate and inference a chosen model defined in LModule. Inherits from BaseModel
-    class. Requires config.&#34;&#34;&#34;
+    class. Requires config.
+    :arg config
+    :arg load_from_ckpt :type Boolean&#34;&#34;&#34;
 
     def __init__(self, config, load_from_ckpt=False):
         &#34;&#34;&#34;Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback
@@ -200,13 +203,15 @@ class TransformerModel(BaseModel):
 <span>(</span><span>model_name_or_path: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>LModule inheriting the pytorch_lightning LightningModule.</p></div>
+<div class="desc"><p>LModule based on pytorch_ligthning
+:arg model_name_or_path</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class LModule(pl.LightningModule):
-    &#34;&#34;&#34;LModule inheriting the pytorch_lightning LightningModule.&#34;&#34;&#34;
+    &#34;&#34;&#34;LModule based on pytorch_ligthning
+    :arg model_name_or_path&#34;&#34;&#34;
 
     def __init__(self, model_name_or_path: str):
         super().__init__()
@@ -238,7 +243,7 @@ class TransformerModel(BaseModel):
         return outputs[0]
 
     def validation_epoch_end(self, outputs) -&gt; None:
-        avg_val_loss = float(sum(outputs[0]) / len(outputs[0]))
+        avg_val_loss = float(sum(outputs) / len(outputs))
         self.log(&#34;avg_val_loss&#34;, avg_val_loss)
         mlflow.log_metric(&#34;avg_val_loss&#34;, avg_val_loss, self.current_epoch)
         print(f&#34;Avg val loss: {avg_val_loss}&#34;)
@@ -717,7 +722,7 @@ each validation step for that dataloader.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validation_epoch_end(self, outputs) -&gt; None:
-    avg_val_loss = float(sum(outputs[0]) / len(outputs[0]))
+    avg_val_loss = float(sum(outputs) / len(outputs))
     self.log(&#34;avg_val_loss&#34;, avg_val_loss)
     mlflow.log_metric(&#34;avg_val_loss&#34;, avg_val_loss, self.current_epoch)
     print(f&#34;Avg val loss: {avg_val_loss}&#34;)</code></pre>
@@ -826,7 +831,9 @@ the model goes back to training mode and gradients are enabled.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Class to select, train, validate and inference a chosen model defined in LModule. Inherits from BaseModel
-class. Requires config.</p>
+class. Requires config.
+:arg config
+:arg load_from_ckpt :type Boolean</p>
 <p>Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback
 for saving the best model as well as the trainer used for the model.</p></div>
 <details class="source">
@@ -835,7 +842,9 @@ for saving the best model as well as the trainer used for the model.</p></div>
 </summary>
 <pre><code class="python">class TransformerModel(BaseModel):
     &#34;&#34;&#34;Class to select, train, validate and inference a chosen model defined in LModule. Inherits from BaseModel
-    class. Requires config.&#34;&#34;&#34;
+    class. Requires config.
+    :arg config
+    :arg load_from_ckpt :type Boolean&#34;&#34;&#34;
 
     def __init__(self, config, load_from_ckpt=False):
         &#34;&#34;&#34;Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback

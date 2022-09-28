@@ -30,14 +30,14 @@
 import json
 import torch
 
-from transformers import BertTokenizerFast
-
+from transformers import AutoTokenizer
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class Inference:
     &#34;&#34;&#34;Inference class loading the model and tokenizer on instantiation&#34;&#34;&#34;
+
     def __init__(self, config, model):
         self.model = model
         self.config = config
@@ -50,7 +50,7 @@ class Inference:
             map_location=torch.device(&#34;cpu&#34;),
         )
         self.model.load_state_dict(self.checkpoint[&#34;state_dict&#34;])
-        self.tokenizer = BertTokenizerFast.from_pretrained(&#34;bert-base-uncased&#34;)
+        self.tokenizer = AutoTokenizer.from_pretrained(config[&#34;type&#34;])
 
     def get_prediction(self, data):
         &#34;&#34;&#34;Prediction function tokenizing the input data, setting the model into eval mode and running inference.
@@ -107,6 +107,7 @@ class Inference:
 </summary>
 <pre><code class="python">class Inference:
     &#34;&#34;&#34;Inference class loading the model and tokenizer on instantiation&#34;&#34;&#34;
+
     def __init__(self, config, model):
         self.model = model
         self.config = config
@@ -119,7 +120,7 @@ class Inference:
             map_location=torch.device(&#34;cpu&#34;),
         )
         self.model.load_state_dict(self.checkpoint[&#34;state_dict&#34;])
-        self.tokenizer = BertTokenizerFast.from_pretrained(&#34;bert-base-uncased&#34;)
+        self.tokenizer = AutoTokenizer.from_pretrained(config[&#34;type&#34;])
 
     def get_prediction(self, data):
         &#34;&#34;&#34;Prediction function tokenizing the input data, setting the model into eval mode and running inference.

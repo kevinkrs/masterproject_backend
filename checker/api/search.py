@@ -21,7 +21,9 @@ class SemanticSearch:
         if not os.path.exists(embedding_path) or self.config["update_data"]:
             # if not, create it
             self.create_embeddings()
-        self.embeddings = pd.read_csv(embedding_path)
+
+        self.embeddings_dataset = Dataset.load_from_disk(embedding_path)
+        self.embeddings_dataset.add_faiss_index(column="embeddings")
 
     def create_embeddings(self):
         # create embeddings
@@ -33,8 +35,11 @@ class SemanticSearch:
             lambda x: {"embeddings": self.get_embeddings(
                 x["text"]).detach().cpu().numpy()[0]}
         )
-        embeddings_dataset.add_faiss_index(column="embeddings")
-        embeddings_dataset.to_csv(os.path.join(
+
+        # remove file name from path
+        embedding_dir = os.path.dirname(self.config["embedding_path"])
+        os.makedirs(os.path.join(self.base_dir, embedding_dir), exist_ok=True)
+        embeddings_dataset.save_to_disk(os.path.join(
             self.base_dir, self.config["embedding_path"]))
 
     def get_similar(self, data):
@@ -51,11 +56,11 @@ class SemanticSearch:
     @staticmethod
     def concatenate_text(fatcs):
         return {
-            "text": fatcs["title"] + " from the " + fatcs["factcheckdate"] #.strftime('%Y-%m-%d')
-            + " \n "
-            + str(fatcs["long_text"] or '')
-            + " \n "
-            + str(fatcs["short_text"] or '')
+            "text": fatcs["title"] + " from the " + fatcs["factcheckdate"]  # .strftime('%Y-%m-%d')
+                    + " \n "
+                    + str(fatcs["long_text"] or '')
+                    + " \n "
+                    + str(fatcs["short_text"] or '')
         }
 
     @staticmethod
@@ -72,7 +77,8 @@ class SemanticSearch:
         encoded_input = self.tokenizer(
             text_list, padding=True, truncation=True, return_tensors="pt"
         )
-        encoded_input = {k: v.to(torch.device)
+        device = torch.device("cuda")
+        encoded_input = {k: v.to(device)
                          for k, v in encoded_input.items()}
         model_output = self.model(**encoded_input)
         return SemanticSearch.cls_pooling(model_output)

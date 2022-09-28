@@ -1,4 +1,4 @@
-from checker.api.search import SemanticSearch
+from search import SemanticSearch
 
 
 def test_search():
@@ -9,7 +9,10 @@ def test_search():
     }
     results = search.get_similar(body)
     for result in results:
-        print(result["text"].strip())
+        print(result["title"])
+        print(result["label"])
+        print(result["scores"])
+        print(result["url"])
 
 
 test_search()

@@ -34,14 +34,14 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 # model = LModule("bert-base-uncased")
 # inference = Inference(config=config, model=model)
-model = LModule("bert-base-uncased")
+model = LModule(config["type"])
 inference = Inference(config=config, model=model)
 search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)
 def inference(data: DataModel):
-    model = LModule("bert-base-uncased")
+    model = LModule(config["type"])
     inference = Inference(config=config, model=model)
     # TODO: Could get quite slow, since model is intialized every request
     label, probs, prob_max = inference.get_prediction(data)

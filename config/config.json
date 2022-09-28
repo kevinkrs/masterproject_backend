@@ -1,5 +1,5 @@
 {
-  "model": "bert",
+  "model": "roberta",
   "full_data_path": "data/full/full_news.csv",
   "raw_data_path": "data/raw/raw_news_data.csv",
   "train_data_path": "data/train/train_news.csv",
@@ -9,7 +9,7 @@
   "model_output_path": "saved_models/bert-based",
   "type": "roberta-base",
   "version": "v1",
-  "version-dev": "v2-0-0",
+  "version-dev": "v1-0-0",
   "train": true,
   "from_ckp": false,
   "evaluate": false,

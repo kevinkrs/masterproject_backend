@@ -76,6 +76,8 @@ class Dataloader:
         - Remove stop words except "not" and "can"
         - Remove trailing whitespace
         """
+        if not isinstance(s, str):
+          s = str(s)
 
         s = s.lower()
 
@@ -156,7 +158,8 @@ class Dataloader:
         # Drop duplicates
         df_raw.drop_duplicates(subset="url", inplace=True)
 
-        df_cleaned = self.drop_empty(df_raw)
+        #df_cleaned = self.drop_empty(df_raw)
+        df_cleaned=df_raw
 
         # Apply binary label
         df_cleaned["label"] = df_cleaned.label.apply(self.get_binary_label)

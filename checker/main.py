@@ -8,7 +8,9 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from utils.datamodels import DataModel
-from model.transformer import LModule
+
+# from model.transformer import LModule
+from transformers import AutoModelForSequenceClassification
 
 from api.inference import Inference
 from api.search import SemanticSearch
@@ -34,7 +36,7 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 # model = LModule("bert-base-uncased")
 # inference = Inference(config=config, model=model)
-model = LModule(config["type"])
+model = AutoModelForSequenceClassification.from_pretrained(config["type"])
 inference = Inference(config=config, model=model)
 search = SemanticSearch()
 

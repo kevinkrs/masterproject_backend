@@ -13,6 +13,7 @@ class Inference:
     :arg model"""
 
     def __init__(self, config, model):
+        # Generic pytorch model load from state_dict
         self.model = model
         self.config = config
         self.checkpoint = torch.load(

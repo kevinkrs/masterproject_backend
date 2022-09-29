@@ -23,12 +23,12 @@ class LModule(pl.LightningModule):
 
     def __init__(self, model_name_or_path: str):
         super().__init__()
-        # self.config = AutoConfig.from_pretrained(
-        #     model_name_or_path,
-        #     num_labels=2,
-        #     output_attentions=False,
-        #     output_hidden_states=False,
-        # )
+        self.config = AutoConfig.from_pretrained(
+            model_name_or_path,
+            num_labels=2,
+            output_attentions=False,
+            output_hidden_states=False,
+        )
         self.classifier = AutoModelForSequenceClassification.from_pretrained(
             model_name_or_path
         )

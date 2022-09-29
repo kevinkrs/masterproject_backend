@@ -36,14 +36,11 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 model = TransformerModel(config, load_from_ckpt=True).model
 inference_api = Inference(config=config, model=model)
-# semantic_search = SemanticSearch()
+semantic_search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)
 def inference(data: DataModel):
-    # model = LModule(config['type'])
-    # inference = Inference(config=config, model=model)
-    # TODO: Could get quite slow, since model is intialized every request
     label, probs, prob_max = inference_api.get_prediction(data)
     response = {"label": label, "probs": probs, "prob_max": prob_max}
 

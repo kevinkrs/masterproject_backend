@@ -8,7 +8,7 @@
   "embedding_path": "data/embeddings/embeddings.csv",
   "model_output_path": "saved_models/roberta-base",
   "type": "roberta-base",
-  "version": "v1",
+  "version": "v2-1-0",
   "version-dev": "v1-0-0",
   "train": true,
   "from_ckp": false,

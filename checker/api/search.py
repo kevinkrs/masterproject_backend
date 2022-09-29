@@ -27,7 +27,7 @@ class SemanticSearch:
 
     def create_embeddings(self):
         # create embeddings
-        raw_path = os.path.join(self.base_dir, self.config["raw_data_path"])
+        raw_path = os.path.join(self.base_dir, self.config["full_data_path"])
         facts_dataset_df = pd.read_csv(raw_path)
         facts_dataset = Dataset.from_pandas(facts_dataset_df)
         facts_dataset = facts_dataset.map(SemanticSearch.concatenate_text)
@@ -46,10 +46,12 @@ class SemanticSearch:
 
     def get_similar(self, data):
         num_results = data.get("num_results", 5)
-        data["sources"]=data["source"]
-        data["source"]=data["author"]
-        data["title"]=data["text"]
-        data=SemanticSearch.concatenate_text(data)
+        data["sources"] = data["source"]
+        data["source"] = data["author"]
+        data["title"] = data["text"]
+        data["url"] = data["source"]
+        data["factchecker"] = None
+        data = SemanticSearch.concatenate_text(data)
         embeddings = self.get_embeddings(data["text"]).cpu().detach().numpy()
         scores, samples = self.embeddings_dataset.get_nearest_examples(
             "embeddings", embeddings, k=num_results
@@ -63,14 +65,14 @@ class SemanticSearch:
     def concatenate_text(fatcs):
         return {
             "text": fatcs["title"]
-            + " from the "
-            + str(fatcs["statementdate"] or fatcs["factcheckdate"] or '')   # .strftime('%Y-%m-%d')
-            + " by "
-            + str(fatcs["factchecker"] or fatcs["url"] or '')
-            + " \n "
-            + str(fatcs["source"] or '')
-            + " \n "
-            + str(fatcs["sources"] or '')
+                    + " from the "
+                    + str(fatcs["statementdate"] or fatcs["factcheckdate"] or '')  # .strftime('%Y-%m-%d')
+                    + " by "
+                    + str(fatcs["factchecker"] or fatcs["url"] or '')
+                    + " \n "
+                    + str(fatcs["source"] or '')
+                    + " \n "
+                    + str(fatcs["sources"] or '')
         }
 
     @staticmethod

@@ -76,6 +76,9 @@ class Dataloader:
         - Remove stop words except "not" and "can"
         - Remove trailing whitespace
         """
+        if not s:
+          return s
+
         s = s.lower()
 
         # Remove some special characters
@@ -83,6 +86,10 @@ class Dataloader:
 
         # Remove quotes
         s = re.sub(r'([\'"`])\s*\1\s*', "", s)
+        s= s.replace(u"”",u"\"")
+        s= s.replace(u"“",u"\"")
+        s= s.replace(u'\xa0', u'')
+        s= s.replace('\\n','')
 
         # Remove stopwords except 'not' and 'can'
         s = " ".join(
@@ -136,6 +143,20 @@ class Dataloader:
         df_raw = pd.read_csv(raw_path, sep=",")
         df_raw = df_raw.drop(index=0)
         # df_raw = df_raw[:100] # Only for debug
+
+        # use factcheckdate if statementdate is empty
+        df_raw["statementdate"] = df_raw["statementdate"].fillna(
+            df_raw["factcheckdate"]
+        )
+        df_raw["long_text"] = df_raw["long_text"].apply(self.text_preprocessing)
+
+
+        # Rename columns
+        df_raw.columns = names
+
+        # Drop duplicates
+        df_raw.drop_duplicates(subset="url", inplace=True)
+
         df_cleaned = self.drop_empty(df_raw)
 
         # Apply binary label
@@ -148,6 +169,7 @@ class Dataloader:
 
         df["title"] = df.title.apply(self.text_preprocessing)
         df["short_text"] = df.short_text.apply(self.text_preprocessing)
+        df["long_text"] =df.long_text.apply(self.text_preprocessing)
 
         return df
 

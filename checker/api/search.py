@@ -8,16 +8,16 @@ from transformers import AutoModel, AutoTokenizer
 
 
 class SemanticSearch:
-
     def __init__(self):
-        self.base_dir = base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.base_dir = base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         with open(os.path.join(self.base_dir, "config/config.json")) as f:
             self.config = json.load(f)
         # check if embeddings csv exists
         self.model, self.tokenizer = SemanticSearch.load_model()
 
-        embedding_path = os.path.join(
-            self.base_dir, self.config["embedding_path"])
+        embedding_path = os.path.join(self.base_dir, self.config["embedding_path"])
         if not os.path.exists(embedding_path) or self.config["update_data"]:
             # if not, create it
             self.create_embeddings()
@@ -32,15 +32,17 @@ class SemanticSearch:
         facts_dataset = Dataset.from_pandas(facts_dataset_df)
         facts_dataset = facts_dataset.map(SemanticSearch.concatenate_text)
         embeddings_dataset = facts_dataset.map(
-            lambda x: {"embeddings": self.get_embeddings(
-                x["text"]).detach().cpu().numpy()[0]}
+            lambda x: {
+                "embeddings": self.get_embeddings(x["text"]).detach().cpu().numpy()[0]
+            }
         )
 
         # remove file name from path
         embedding_dir = os.path.dirname(self.config["embedding_path"])
         os.makedirs(os.path.join(self.base_dir, embedding_dir), exist_ok=True)
-        embeddings_dataset.save_to_disk(os.path.join(
-            self.base_dir, self.config["embedding_path"]))
+        embeddings_dataset.save_to_disk(
+            os.path.join(self.base_dir, self.config["embedding_path"])
+        )
 
     def get_similar(self, data):
         num_results = data.get("num_results", 5)
@@ -56,17 +58,19 @@ class SemanticSearch:
     @staticmethod
     def concatenate_text(fatcs):
         return {
-            "text": fatcs["title"] + " from the " + fatcs["factcheckdate"]  # .strftime('%Y-%m-%d')
-                    + " \n "
-                    + str(fatcs["long_text"] or '')
-                    + " \n "
-                    + str(fatcs["short_text"] or '')
+            "text": fatcs["title"]
+            + " from the "
+            + str(fatcs["statementdate"] or fatcs["factcheckdate"] or '')   # .strftime('%Y-%m-%d')
+            + " by "
+            + str(fatcs["factchecker"] or fatcs["url"] or '')
+            + " \n "
+            + str(fatcs["soruces"] or '')
         }
 
     @staticmethod
     def load_model():
         # load model
-        model_ckpt = "sentence-transformers/multi-qa-mpnet-base-dot-v1"
+        model_ckpt = "sentence-transformers/all-mpnet-base-v2"
         tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
         model = AutoModel.from_pretrained(model_ckpt)
         device = torch.device("cuda")
@@ -78,8 +82,7 @@ class SemanticSearch:
             text_list, padding=True, truncation=True, return_tensors="pt"
         )
         device = torch.device("cuda")
-        encoded_input = {k: v.to(device)
-                         for k, v in encoded_input.items()}
+        encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
         model_output = self.model(**encoded_input)
         return SemanticSearch.cls_pooling(model_output)
 

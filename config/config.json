@@ -7,7 +7,7 @@
   "test_data_path": "data/test/test_news.csv",
   "embedding_path": "data/embeddings/embeddings.csv",
   "model_output_path": "saved_models/bert-based",
-  "type": "roberta-base",
+  "type": "bert-base-uncased",
   "version": "v1",
   "version-dev": "v2-0-0",
   "train": true,
@@ -18,7 +18,7 @@
   "max_seq_length": 64,
   "learning_rate": 3e-5,
   "num_epochs": 5,
-  "update_data": true,
+  "update_data": false,
   "params": {},
   "env": {
     "TOKENIZERS_PARALLELISM": "true",

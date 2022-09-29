@@ -73,7 +73,7 @@ class SemanticSearch:
         model_ckpt = "sentence-transformers/all-mpnet-base-v2"
         tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
         model = AutoModel.from_pretrained(model_ckpt)
-        device = torch.device("cuda")
+        device = torch.device("cpu")
         model.to(device)
         return model, tokenizer
 

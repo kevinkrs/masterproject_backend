@@ -4,3 +4,6 @@
 /raw/raw_news_data.csv
 /full/full_news.csv
 dvc_test
+/checker/saved_models/*
+/embeddings/*
+saved_models/*

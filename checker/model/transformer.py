@@ -93,7 +93,9 @@ class TransformerModel(BaseModel):
 
         else:
             self.model = LModule(config["type"])
-            model_output_path = os.path.join(base_dir, config["model_output_path"])
+            model_output_path = os.path.join(
+                base_dir, "checker", config["model_output_path"]
+            )
             checkpoint_callback = ModelCheckpoint(
                 monitor="val_loss",
                 mode="min",

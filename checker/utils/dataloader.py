@@ -76,8 +76,6 @@ class Dataloader:
         - Remove stop words except "not" and "can"
         - Remove trailing whitespace
         """
-        if not s:
-          return s
 
         s = s.lower()
 
@@ -89,7 +87,7 @@ class Dataloader:
         s= s.replace(u"”",u"\"")
         s= s.replace(u"“",u"\"")
         s= s.replace(u'\xa0', u'')
-        s= s.replace('\\n','')
+        #s= s.replace('\\n','')
 
         # Remove stopwords except 'not' and 'can'
         s = " ".join(
@@ -126,6 +124,7 @@ class Dataloader:
 
     def preprocess_cleaning(self, raw_path):
         names = [
+            "index",
             "_id",
             "title",
             "url",
@@ -148,7 +147,7 @@ class Dataloader:
         df_raw["statementdate"] = df_raw["statementdate"].fillna(
             df_raw["factcheckdate"]
         )
-        df_raw["long_text"] = df_raw["long_text"].apply(self.text_preprocessing)
+        #df_raw["long_text"] = df_raw["long_text"].apply(self.text_preprocessing)
 
 
         # Rename columns
@@ -169,7 +168,6 @@ class Dataloader:
 
         df["title"] = df.title.apply(self.text_preprocessing)
         df["short_text"] = df.short_text.apply(self.text_preprocessing)
-        df["long_text"] =df.long_text.apply(self.text_preprocessing)
 
         return df
 

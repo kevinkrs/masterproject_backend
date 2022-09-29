@@ -46,6 +46,10 @@ class SemanticSearch:
 
     def get_similar(self, data):
         num_results = data.get("num_results", 5)
+        data["sources"]=data["source"]
+        data["source"]=data["author"]
+        data["title"]=data["text"]
+        data=SemanticSearch.concatenate_text(data)
         embeddings = self.get_embeddings(data["text"]).cpu().detach().numpy()
         scores, samples = self.embeddings_dataset.get_nearest_examples(
             "embeddings", embeddings, k=num_results
@@ -64,7 +68,9 @@ class SemanticSearch:
             + " by "
             + str(fatcs["factchecker"] or fatcs["url"] or '')
             + " \n "
-            + str(fatcs["soruces"] or '')
+            + str(fatcs["source"] or '')
+            + " \n "
+            + str(fatcs["sources"] or '')
         }
 
     @staticmethod
@@ -73,7 +79,7 @@ class SemanticSearch:
         model_ckpt = "sentence-transformers/all-mpnet-base-v2"
         tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
         model = AutoModel.from_pretrained(model_ckpt)
-        device = torch.device("cpu")
+        device = torch.device("cuda")
         model.to(device)
         return model, tokenizer
 

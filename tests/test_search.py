@@ -4,7 +4,10 @@ from search import SemanticSearch
 def test_search():
     search = SemanticSearch()
     body = {
-        "text": "When the New York State Senate voted to legalize abortion in 1970, 12 Republican senators voted in favor of it.",
+        "text": "Russia “has not lost anything” in its invasion of Ukraine.",
+        "statementdate": "2022-07-09",
+        "source": "http://en.kremlin.ru/events/president/transcripts/69299",
+        "author": "Vladimir Putin",
         "num_results": 6
     }
     results = search.get_similar(body)

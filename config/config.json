@@ -6,7 +6,7 @@
   "val_data_path": "data/val/valid_news.csv",
   "test_data_path": "data/test/test_news.csv",
   "embedding_path": "data/embeddings/embeddings.csv",
-  "model_output_path": "saved_models/bert-based",
+  "model_output_path": "saved_models/roberta-base",
   "type": "roberta-base",
   "version": "v1",
   "version-dev": "v1-0-0",

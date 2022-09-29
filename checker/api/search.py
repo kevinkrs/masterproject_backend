@@ -45,20 +45,38 @@ class SemanticSearch:
         )
 
     def get_similar(self, data):
-        num_results = data.get("num_results", 5)
-        data["sources"] = data["source"]
-        data["source"] = data["author"]
-        data["title"] = data["text"]
-        data["url"] = data["source"]
-        data["factchecker"] = None
-        data = SemanticSearch.concatenate_text(data)
-        embeddings = self.get_embeddings(data["text"]).cpu().detach().numpy()
+        num_results = 5
+        search_data = {}
+        #check if source is filled
+        if data.source:
+            search_data["sources"] = data.source
+            search_data["url"] = data.source
+        else:
+            # if not, empty
+            search_data["sources"] = ""
+            search_data["url"] = ""
+
+        #check if author is filled
+        if data.author:
+            search_data["source"] = data.author
+        else:
+            # if not, empty
+            search_data["source"] = ""
+
+        search_data["title"] = data.text
+
+        search_data["statementdate"] = data.statementdate
+        search_data["factchecker"] = ""
+        search_data["factcheckdate"] = ""
+        search_data = SemanticSearch.concatenate_text(search_data)
+        print(search_data["text"])
+        embeddings = self.get_embeddings(search_data["text"]).cpu().detach().numpy()
         scores, samples = self.embeddings_dataset.get_nearest_examples(
             "embeddings", embeddings, k=num_results
         )
         samples_df = pd.DataFrame.from_dict(samples)
         samples_df["scores"] = scores
-        samples_df.sort_values("scores", ascending=False, inplace=True)
+        samples_df.sort_values("scores", ascending=True, inplace=True)
         return samples_df.to_dict(orient="records")
 
     @staticmethod
@@ -66,13 +84,13 @@ class SemanticSearch:
         return {
             "text": fatcs["title"]
                     + " from the "
-                    + str(fatcs["statementdate"] or fatcs["factcheckdate"] or '')  # .strftime('%Y-%m-%d')
+                    + fatcs["statementdate"] + " " + fatcs["factcheckdate"]
                     + " by "
-                    + str(fatcs["factchecker"] or fatcs["url"] or '')
+                    + fatcs["factchecker"] + " " + fatcs["url"]
                     + " \n "
-                    + str(fatcs["source"] or '')
+                    + fatcs["source"]
                     + " \n "
-                    + str(fatcs["sources"] or '')
+                    + fatcs["sources"]
         }
 
     @staticmethod
@@ -81,7 +99,7 @@ class SemanticSearch:
         model_ckpt = "sentence-transformers/all-mpnet-base-v2"
         tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
         model = AutoModel.from_pretrained(model_ckpt)
-        device = torch.device("cuda")
+        device = torch.device("cpu")
         model.to(device)
         return model, tokenizer
 
@@ -89,7 +107,7 @@ class SemanticSearch:
         encoded_input = self.tokenizer(
             text_list, padding=True, truncation=True, return_tensors="pt"
         )
-        device = torch.device("cuda")
+        device = torch.device("cpu")
         encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
         model_output = self.model(**encoded_input)
         return SemanticSearch.cls_pooling(model_output)

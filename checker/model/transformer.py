@@ -29,13 +29,13 @@ class LModule(pl.LightningModule):
             output_attentions=False,
             output_hidden_states=False,
         )
-        self.classifier = AutoModelForSequenceClassification.from_pretrained(
+        self.model = AutoModelForSequenceClassification.from_pretrained(
             model_name_or_path, config=self.config
         )
         self.save_hyperparameters()
 
     def forward(self, **inputs):
-        outputs = self.classifier(**inputs)
+        outputs = self.model(**inputs)
         return outputs
 
     def training_step(self, batch, batch_idx):

@@ -51,3 +51,18 @@ def inference(data: DataModel):
 def search(data: DataModel):
     response = semantic_search.get_similar(data)
     return ORJSONResponse(response)
+
+
+@app.post("/api/training")
+def getUserData(data: TrainModel):
+    data_dir = os.path.join(base_dir, "data", "userHistory", "userHistory.csv")
+    if os.path.exists(os.path.join(base_dir, "data", "userHistory")):
+        old = pd.read_csv(data_dir, sep=",")
+        new = pd.DataFrame(jsonable_encoder(data))
+        save = pd.concat([old, new])
+        save.to_csv(data_dir)
+    else:
+        os.makedirs(os.path.join(base_dir, "data", "userHistory"), exist_ok=True)
+        new = pd.DataFrame(jsonable_encoder(data))
+        new.to_csv(data_dir)
+    return True

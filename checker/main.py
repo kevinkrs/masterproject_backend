@@ -36,7 +36,7 @@ with open(os.path.join(base_dir, "config/config.json")) as f:
 
 model = TransformerModel(config, load_from_ckpt=True).model
 inference_api = Inference(config=config, model=model)
-semantic_search = SemanticSearch()
+# semantic_search = SemanticSearch()
 
 
 @app.post("/api/predict", response_class=ORJSONResponse)

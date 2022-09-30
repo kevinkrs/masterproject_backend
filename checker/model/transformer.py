@@ -81,7 +81,9 @@ class TransformerModel(BaseModel):
         """Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback
         for saving the best model as well as the trainer used for the model."""
         self.config = config
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(
                 os.path.join(
@@ -93,9 +95,7 @@ class TransformerModel(BaseModel):
 
         else:
             self.model = LModule(config["type"])
-            model_output_path = os.path.join(
-                base_dir, "checker", config["model_output_path"]
-            )
+            model_output_path = os.path.join(base_dir, config["model_output_path"])
             checkpoint_callback = ModelCheckpoint(
                 monitor="val_loss",
                 mode="min",

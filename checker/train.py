@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     mlflow.set_experiment(config["model"])
 
-    model_output_path = os.path.join(base_dir, "checker", config["model_output_path"])
+    model_output_path = os.path.join(base_dir, config["model_output_path"])
 
     os.makedirs(os.path.join(base_dir, config["model_output_path"]), exist_ok=True)
 

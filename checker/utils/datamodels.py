@@ -7,3 +7,11 @@ class DataModel(BaseModel):
     statementdate: str
     author: Optional[str]
     source: Optional[str]
+
+
+class TrainModel(BaseModel):
+    text: str
+    statementdate: str
+    author: Optional[str]
+    source: Optional[str]
+    results: object

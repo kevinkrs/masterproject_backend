@@ -7,7 +7,7 @@ import json
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from utils.datamodels import DataModel
+from utils.datamodels import DataModel, TrainModel
 from model.transformer import LModule, TransformerModel
 
 from api.inference import Inference

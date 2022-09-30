@@ -47,6 +47,7 @@ dvc-render==0.0.9
 dvc-task==0.1.2
 dvclive==0.10.0
 entrypoints==0.4
+faiss-cpu==1.7.2
 fastapi==0.85.0
 filelock==3.8.0
 Flask==2.2.2

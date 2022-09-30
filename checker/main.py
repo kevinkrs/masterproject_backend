@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 import numpy as np
 import logging
@@ -5,6 +6,7 @@ import os
 import json
 
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from utils.datamodels import DataModel, TrainModel

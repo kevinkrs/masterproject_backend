@@ -4,3 +4,5 @@
 /raw/raw_news_data.csv
 /full/full_news.csv
 dvc_test
+/embeddings/*
+/userHistory

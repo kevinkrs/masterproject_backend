@@ -27,7 +27,7 @@ class SemanticSearch:
 
     def create_embeddings(self):
         # create embeddings
-        raw_path = os.path.join(self.base_dir, self.config["raw_data_path"])
+        raw_path = os.path.join(self.base_dir, self.config["full_data_path"])
         facts_dataset_df = pd.read_csv(raw_path)
         facts_dataset = Dataset.from_pandas(facts_dataset_df)
         facts_dataset = facts_dataset.map(SemanticSearch.concatenate_text)
@@ -45,32 +45,58 @@ class SemanticSearch:
         )
 
     def get_similar(self, data):
-        num_results = data.get("num_results", 5)
-        embeddings = self.get_embeddings(data["text"]).cpu().detach().numpy()
+        num_results = 5
+        search_data = {}
+        #check if source is filled
+        if data.source:
+            search_data["sources"] = data.source
+            search_data["url"] = data.source
+        else:
+            # if not, empty
+            search_data["sources"] = ""
+            search_data["url"] = ""
+
+        #check if author is filled
+        if data.author:
+            search_data["source"] = data.author
+        else:
+            # if not, empty
+            search_data["source"] = ""
+
+        search_data["title"] = data.text
+
+        search_data["statementdate"] = data.statementdate
+        search_data["factchecker"] = ""
+        search_data["factcheckdate"] = ""
+        search_data = SemanticSearch.concatenate_text(search_data)
+        print(search_data["text"])
+        embeddings = self.get_embeddings(search_data["text"]).cpu().detach().numpy()
         scores, samples = self.embeddings_dataset.get_nearest_examples(
             "embeddings", embeddings, k=num_results
         )
         samples_df = pd.DataFrame.from_dict(samples)
         samples_df["scores"] = scores
-        samples_df.sort_values("scores", ascending=False, inplace=True)
+        samples_df.sort_values("scores", ascending=True, inplace=True)
         return samples_df.to_dict(orient="records")
 
     @staticmethod
     def concatenate_text(fatcs):
         return {
             "text": fatcs["title"]
-            + " from the "
-            + fatcs["factcheckdate"]  # .strftime('%Y-%m-%d')
-            + " \n "
-            + str(fatcs["long_text"] or "")
-            + " \n "
-            + str(fatcs["short_text"] or "")
+                    + " from the "
+                    + fatcs["statementdate"] + " " + fatcs["factcheckdate"]
+                    + " by "
+                    + fatcs["factchecker"] + " " + fatcs["url"]
+                    + " \n "
+                    + fatcs["source"]
+                    + " \n "
+                    + fatcs["sources"]
         }
 
     @staticmethod
     def load_model():
         # load model
-        model_ckpt = "sentence-transformers/multi-qa-mpnet-base-dot-v1"
+        model_ckpt = "sentence-transformers/all-mpnet-base-v2"
         tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
         model = AutoModel.from_pretrained(model_ckpt)
         device = torch.device("cpu")

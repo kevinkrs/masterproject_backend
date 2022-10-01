@@ -29,13 +29,14 @@ class LModule(pl.LightningModule):
             output_attentions=False,
             output_hidden_states=False,
         )
-        self.classifier = AutoModelForSequenceClassification.from_pretrained(
-            model_name_or_path
+
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            model_name_or_path, config=self.config
         )
         self.save_hyperparameters()
 
     def forward(self, **inputs):
-        outputs = self.classifier(**inputs)
+        outputs = self.model(**inputs)
         return outputs
 
     def training_step(self, batch, batch_idx):
@@ -81,7 +82,9 @@ class TransformerModel(BaseModel):
         """Init method checks if model should be trained fershly or from checkpoint. It also defines the checkpoint callback
         for saving the best model as well as the trainer used for the model."""
         self.config = config
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         if load_from_ckpt:
             self.model = LModule.load_from_checkpoint(
                 os.path.join(

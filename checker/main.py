@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+
 from utils.datamodels import DataModel, TrainModel
 from model.transformer import LModule, TransformerModel
 

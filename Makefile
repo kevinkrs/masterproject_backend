@@ -12,7 +12,7 @@ create-required-files:
 
 run-server:
 	cd checker && \
-	uvicorn main:app --reload
+	uvicorn main:app --port 8082 --reload
 
 run-hyperparam-tuning:
 	python3 checker/hyperparam_main.py

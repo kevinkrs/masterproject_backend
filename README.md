@@ -1,7 +1,7 @@
 # Masterproject FakeChecker Backend
 Welcome to our backend. This is a neat little repository to train or utilise any transformer model for inference that is available
-on [huggingfacve.co](huggingface.co). Just follow the setup and enjoy playing around with transformers.
-For our case, we created a FakeChecker with corresponding UI [Frontend Repository](https://github.com/kevinkrs/fakechecker_mp_frontend/blob/master).
+on [huggingface.co](huggingface.co). Just follow the setup and enjoy playing around with transformers.
+For our case, we created a FakeChecker with corresponding UI [Frontend Repository](https://github.com/kevinkrs/fakechecker_mp_frontend/tree/master).
 In any case, feel free to reach out if any questions, feedback or suggestions arise.
 
 

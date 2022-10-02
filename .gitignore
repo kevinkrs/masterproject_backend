@@ -5,3 +5,4 @@ mlruns
 __pycache__
 venv
 checker/saved_models/*
+data/embeddings/*

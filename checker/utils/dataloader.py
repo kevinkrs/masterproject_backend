@@ -77,7 +77,7 @@ class Dataloader:
         - Remove trailing whitespace
         """
         if not isinstance(s, str):
-          s = str(s)
+            s = str(s)
 
         s = s.lower()
 
@@ -86,10 +86,10 @@ class Dataloader:
 
         # Remove quotes
         s = re.sub(r'([\'"`])\s*\1\s*', "", s)
-        s= s.replace(u"”",u"\"")
-        s= s.replace(u"“",u"\"")
-        s= s.replace(u'\xa0', u'')
-        #s= s.replace('\\n','')
+        s = s.replace("”", '"')
+        s = s.replace("“", '"')
+        s = s.replace("\xa0", "")
+        # s= s.replace('\\n','')
 
         # Remove stopwords except 'not' and 'can'
         s = " ".join(
@@ -149,17 +149,17 @@ class Dataloader:
         df_raw["statementdate"] = df_raw["statementdate"].fillna(
             df_raw["factcheckdate"]
         )
-        #df_raw["long_text"] = df_raw["long_text"].apply(self.text_preprocessing)
-
+        # df_raw["long_text"] = df_raw["long_text"].apply(self.text_preprocessing)
 
         # Rename columns
         df_raw.columns = names
 
         # Drop duplicates
-        df_raw.drop_duplicates(subset="url", inplace=True)
+        # df_raw.drop_duplicates(subset="url", inplace=True)
+        df_raw.drop_duplicates(subset="title", inplace=True)
 
-        #df_cleaned = self.drop_empty(df_raw)
-        df_cleaned=df_raw
+        # df_cleaned = self.drop_empty(df_raw)
+        df_cleaned = df_raw
 
         # Apply binary label
         df_cleaned["label"] = df_cleaned.label.apply(self.get_binary_label)

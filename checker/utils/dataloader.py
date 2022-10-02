@@ -187,4 +187,5 @@ class Dataloader:
         valid.to_csv(valid_path)
         test.to_csv(test_path)
 
+        self.logger.info(f"Full dataframe hase {df.shape[0]}")
         self.logger.info("Successfully created test, valid and train dataset")

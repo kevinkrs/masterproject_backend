@@ -29,6 +29,7 @@ class LModule(pl.LightningModule):
             output_attentions=False,
             output_hidden_states=False,
         )
+
         self.model = AutoModelForSequenceClassification.from_pretrained(
             model_name_or_path, config=self.config
         )
